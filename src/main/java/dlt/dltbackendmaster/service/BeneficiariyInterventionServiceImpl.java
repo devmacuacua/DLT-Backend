@@ -83,10 +83,10 @@ public class BeneficiariyInterventionServiceImpl implements BeneficiariyInterven
 	}
 
 	@Override
-	public List<CountIntervention> findInterventionsPerBeneficiary() {
+	public List<CountIntervention> findInterventionsPerBeneficiaryAndServiceType() {
 
 		List<CountIntervention> beneficiariesInterventions = daoService
-				.GetAllEntityByNamedQuery("BeneficiaryIntervention.findInterventionsPerBeneficiary");
+				.GetAllEntityByNamedQuery("BeneficiaryIntervention.findInterventionsPerBeneficiaryAndServiceType");
 
 		return beneficiariesInterventions;
 	}

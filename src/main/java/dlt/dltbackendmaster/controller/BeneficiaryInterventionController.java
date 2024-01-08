@@ -203,10 +203,10 @@ public class BeneficiaryInterventionController {
 		}
 	}
 
-	@GetMapping(path = "/countByBeneficiary", produces = "application/json")
-	public ResponseEntity<List<CountIntervention>> countByBeneficiary() {
+	@GetMapping(path = "/countByBeneficiaryAndServiceType", produces = "application/json")
+	public ResponseEntity<List<CountIntervention>> countByBeneficiaryAndServiceType() {
 		try {
-			List<CountIntervention> interventions = beneficiariyInterventionService.findInterventionsPerBeneficiary();
+			List<CountIntervention> interventions = beneficiariyInterventionService.findInterventionsPerBeneficiaryAndServiceType();
 			return new ResponseEntity<>(interventions, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
