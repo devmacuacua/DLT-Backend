@@ -308,4 +308,17 @@ public class BeneficiaryInterventionController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@GetMapping(path = "/countByBeneficiaryAndAgeBandAndLevel/{beneficiaryId}/{ageBand}/{level}", produces = "application/json")
+	public ResponseEntity<List<CountIntervention>> countInterventionsByBeneficiaryAndAgeBandAndLevel(
+			@PathVariable Integer beneficiaryId, @PathVariable Integer ageBand, @PathVariable Integer level) {
+		try {
+			List<CountIntervention> interventions = beneficiariyInterventionService
+					.countInterventionsByBeneficiaryAndAgeBandAndLevel(beneficiaryId, ageBand, level);
+
+			return new ResponseEntity<>(interventions, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

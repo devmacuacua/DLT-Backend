@@ -134,7 +134,17 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 															            "FROM BeneficiariesInterventions inter " +
 															            "WHERE inter.beneficiaries.id = :beneficiaryId " +
 															            "AND inter.subServices.services.id in :servicesIds " +
-															            "GROUP BY inter.beneficiaries.id")
+															            "GROUP BY inter.beneficiaries.id"),
+	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndAgeBandAndLevel",
+															    query = "SELECT " +
+															            "    inter.beneficiaries.id AS beneficiary_id, " +
+															            "    COUNT(inter.beneficiaries.id) AS interventions " +
+															            "FROM BeneficiariesInterventions inter " +
+															            "INNER JOIN fetch ServiceAgeband ab on inter.subServices.services.id = ab.serviceId " +
+															            "WHERE inter.beneficiaries.id = :beneficiaryId "+															      
+															            "AND ab.ageBand =:ageBand " +
+															            "AND ab.level = :level " +
+															            "GROUP BY inter.beneficiaries.id"),
 })
 public class BeneficiariesInterventions implements java.io.Serializable {
 	
