@@ -127,14 +127,6 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 															            "FROM BeneficiariesInterventions inter " +
 															            "WHERE inter.beneficiaries.id = :beneficiaryId " +
 															            "GROUP BY inter.beneficiaries.id"),
-	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndSubServicesIds",
-															    query = "SELECT " +
-															            "    inter.beneficiaries.id AS beneficiary_id, " +
-															            "    COUNT(inter.beneficiaries.id) AS interventions " +
-															            "FROM BeneficiariesInterventions inter " +
-															            "WHERE inter.beneficiaries.id = :beneficiaryId " +
-															            "AND inter.subServices.services.id in :servicesIds " +
-															            "GROUP BY inter.beneficiaries.id"),
 	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndAgeBandAndLevel",
 															    query = "SELECT " +
 															            "    inter.beneficiaries.id AS beneficiary_id, " +

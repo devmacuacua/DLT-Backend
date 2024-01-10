@@ -105,14 +105,6 @@ public class BeneficiariyInterventionServiceImpl implements BeneficiariyInterven
 
 		return beneficiariesInterventions;
 	}
-	
-	@Override
-	public List<CountIntervention> countInterventionsByBeneficiaryAndSubServicesIds(Integer beneficiaryId, Integer[]servicesIds) {
-		List<CountIntervention> beneficiariesInterventions = daoService
-				.GetEntityByNamedQuery("BeneficiaryIntervention.countInterventionsByBeneficiaryAndSubServicesIds", beneficiaryId, Arrays.asList(servicesIds));
-
-		return beneficiariesInterventions;
-	}
 
 	@Override
 	public List<CountIntervention> countInterventionsByBeneficiaryAndAgeBandAndLevel(Integer beneficiaryId, Integer ageBand, Integer level) {
