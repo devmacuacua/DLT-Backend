@@ -61,7 +61,7 @@ public class BeneficiaryInterventionController {
 
 		try {
 			Us us = service.find(Us.class, intervention.getUs().getId());
-			//FIXME: Remover esta gambiária após resolver o issue
+			// FIXME: Remover esta gambiária após resolver o issue
 			Beneficiaries beneficiary = service.find(Beneficiaries.class, intervention.getId().getBeneficiaryId());
 			intervention.setUs(us);
 			intervention.setBeneficiaries(beneficiary);
@@ -84,7 +84,8 @@ public class BeneficiaryInterventionController {
 				References reference = referenceServices.getReferences();
 				List<BeneficiariesInterventions> interventions = service.GetAllEntityByNamedQuery(
 						"BeneficiaryIntervention.findAllByBeneficiaryAndDate",
-						Instant.ofEpochMilli(reference.getDate().getTime()).atZone(ZoneId.systemDefault()).toLocalDate(),
+						Instant.ofEpochMilli(reference.getDate().getTime()).atZone(ZoneId.systemDefault())
+								.toLocalDate(),
 						beneficiary.getId());
 				Integer referenceServiceStatus = ServiceCompletionRules.getReferenceServiceStatus(interventions,
 						serviceId);
@@ -141,8 +142,8 @@ public class BeneficiaryInterventionController {
 				currentIntervention.setStatus(0);
 				currentIntervention.setDateUpdated(new Date());
 				service.delete(currentIntervention); // Must remove to allow new additions with this key afterwards
-				
-				//FIXME: Remover esta gambiária após resolver o issue
+
+				// FIXME: Remover esta gambiária após resolver o issue
 				Beneficiaries beneficiary = service.find(Beneficiaries.class, intervention.getId().getBeneficiaryId());
 
 				BeneficiariesInterventions newInterv = new BeneficiariesInterventions();
@@ -203,23 +204,105 @@ public class BeneficiaryInterventionController {
 		}
 	}
 
-	@GetMapping(path = "/countByBeneficiaryAndServiceType", produces = "application/json")
+	@GetMapping(path = "/countAllInterventionsAndbByServiceType", produces = "application/json")
 	public ResponseEntity<List<CountIntervention>> countByBeneficiaryAndServiceType() {
 		try {
-			List<CountIntervention> interventions = beneficiariyInterventionService.findInterventionsPerBeneficiaryAndServiceType();
+			List<CountIntervention> interventions = beneficiariyInterventionService
+					.countAllInterventionsAndbByServiceType();
 			return new ResponseEntity<>(interventions, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-		
+
 	@GetMapping(path = "/byBeneficiariesIds", produces = "application/json")
 	public ResponseEntity<List<BeneficiariesInterventions>> getByBeneficiariesIds(
 			@RequestParam(name = "params") Integer[] params) {
 		try {
 			List<BeneficiariesInterventions> interventions = beneficiariyInterventionService
 					.findByBeneficiariesIds(params);
-			 
+
+			return new ResponseEntity<>(interventions, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(path = "/countByBeneficiaryAndServiceType/{beneficiaryId}", produces = "application/json")
+	public ResponseEntity<List<CountIntervention>> countByBeneficiaryAndServiceType(
+			@PathVariable Integer beneficiaryId) {
+		try {
+			List<CountIntervention> interventions = beneficiariyInterventionService
+					.countInterventionsByBeneficiaryAndServiceType(beneficiaryId);
+
+			return new ResponseEntity<>(interventions, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(path = "/countPrimaryByBeneficiaryAndServiceTypeAndAge/{beneficiaryId}/{age}", produces = "application/json")
+	public ResponseEntity<List<CountIntervention>> countPrimaryByBeneficiaryAndServiceTypeAndcoreService(
+			@PathVariable Integer beneficiaryId, @PathVariable Integer age) {
+		try {
+			List<CountIntervention> interventions = new ArrayList<CountIntervention>();
+
+			Integer[] servicesIdsAgesBetween10and14 = { 28, 43, 44, 47, 50, 45, 48, 51, 55, 37 };
+			Integer[] servicesIdsAgesBetween15and19 = { 28, 43, 55, 1, 9 };
+			Integer[] servicesIdsAgesBetween20and24 = { 28, 43, 55, 1, 9 };
+
+			if (age >= 10 && age <= 14) {
+				interventions = beneficiariyInterventionService
+						.countInterventionsByBeneficiaryAndSubServicesIds(beneficiaryId, servicesIdsAgesBetween10and14);
+			} else if (age >= 15 && age <= 19) {
+				interventions = beneficiariyInterventionService
+						.countInterventionsByBeneficiaryAndSubServicesIds(beneficiaryId, servicesIdsAgesBetween15and19);
+			} else if (age >= 20 && age <= 24) {
+				interventions = beneficiariyInterventionService
+						.countInterventionsByBeneficiaryAndSubServicesIds(beneficiaryId, servicesIdsAgesBetween20and24);
+			}
+			return new ResponseEntity<>(interventions, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(path = "/countSecondaryByBeneficiaryAndServiceTypeAndAge/{beneficiaryId}/{age}", produces = "application/json")
+	public ResponseEntity<List<CountIntervention>> countSecondaryByBeneficiaryAndServiceTypeAndcoreService(
+			@PathVariable Integer beneficiaryId, @PathVariable Integer age) {
+		try {
+			List<CountIntervention> interventions = new ArrayList<CountIntervention>();
+
+			Integer[] servicesIdsAgesBetween10and14 = { 18, 3, 42, 1, 2, 36, 9 };
+			Integer[] servicesIdsAgesBetween15and19 = { 18, 3, 42, 21, 2, 36 };
+			Integer[] servicesIdsAgesBetween20and24 = { 3, 42, 21, 2, 36 };
+
+			if (age >= 10 && age <= 14) {
+				interventions = beneficiariyInterventionService
+						.countInterventionsByBeneficiaryAndSubServicesIds(beneficiaryId, servicesIdsAgesBetween10and14);
+			} else if (age >= 15 && age <= 19) {
+				interventions = beneficiariyInterventionService
+						.countInterventionsByBeneficiaryAndSubServicesIds(beneficiaryId, servicesIdsAgesBetween15and19);
+			} else if (age >= 20 && age <= 24) {
+				interventions = beneficiariyInterventionService
+						.countInterventionsByBeneficiaryAndSubServicesIds(beneficiaryId, servicesIdsAgesBetween20and24);
+			}
+			return new ResponseEntity<>(interventions, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(path = "/countContextualByBeneficiary/{beneficiaryId}", produces = "application/json")
+	public ResponseEntity<List<CountIntervention>> countContextualByBeneficiary(@PathVariable Integer beneficiaryId) {
+		try {
+			List<CountIntervention> interventions = new ArrayList<CountIntervention>();
+
+			Integer[] servicesIds = { 38, 39, 40, 53 };
+
+			interventions = beneficiariyInterventionService
+					.countInterventionsByBeneficiaryAndSubServicesIds(beneficiaryId, servicesIds);
+
 			return new ResponseEntity<>(interventions, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

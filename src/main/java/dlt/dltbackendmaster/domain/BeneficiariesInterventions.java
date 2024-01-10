@@ -70,7 +70,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id in :beneficiaries_ids and b.dateCreated >= :lastpulledat "),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiariesIdsAndDateUpdated", 
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id in :beneficiaries_ids and b.dateCreated < :lastpulledat and b.dateUpdated >= :lastpulledat "),
-	@NamedQuery(name = "BeneficiaryIntervention.findInterventionsPerBeneficiaryAndServiceType",
+	@NamedQuery(name = "BeneficiaryIntervention.countAllInterventionsAndbByServiceType",
 		    query = "SELECT " +
 		            "    inter.beneficiaries.id AS beneficiary_id, " +
 		            "    COUNT(inter.beneficiaries.id) AS interventions, " +
@@ -118,6 +118,23 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																		+ "left join fetch bi.beneficiaries b "
 																		+ "left join fetch b.partners "
 																    	+ "where b.id in :beneficiariesIds "),
+	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndServiceType",
+															    query = "SELECT " +
+															            "    inter.beneficiaries.id AS beneficiary_id, " +
+															            "    COUNT(inter.beneficiaries.id) AS interventions, " +
+															            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 1 THEN 1 END) AS clinicalInterventions, " +
+															            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 2 THEN 1 END) AS communityInterventions " +
+															            "FROM BeneficiariesInterventions inter " +
+															            "WHERE inter.beneficiaries.id = :beneficiaryId " +
+															            "GROUP BY inter.beneficiaries.id"),
+	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndSubServicesIds",
+															    query = "SELECT " +
+															            "    inter.beneficiaries.id AS beneficiary_id, " +
+															            "    COUNT(inter.beneficiaries.id) AS interventions " +
+															            "FROM BeneficiariesInterventions inter " +
+															            "WHERE inter.beneficiaries.id = :beneficiaryId " +
+															            "AND inter.subServices.services.id in :servicesIds " +
+															            "GROUP BY inter.beneficiaries.id")
 })
 public class BeneficiariesInterventions implements java.io.Serializable {
 	
