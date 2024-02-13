@@ -542,7 +542,6 @@ public class AgywPrevController {
             
             // Define headers
             String[] headers = {
-                "#",
                 "Província",
                 "Distrito",
                 "Onde Mora",
