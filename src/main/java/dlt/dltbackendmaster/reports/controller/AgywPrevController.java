@@ -1,6 +1,7 @@
 package dlt.dltbackendmaster.reports.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -13,6 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -28,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.reports.AgywPrevReport;
-import dlt.dltbackendmaster.reports.ExcelDocumentFormatting;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.ReportResponse;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
@@ -109,95 +115,6 @@ public class AgywPrevController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
-	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(@RequestParam(name = "province") String province,
-			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
-			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageIndex") int pageIndex,
-			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username)
-			throws IOException {
-
-		AgywPrevReport report = new AgywPrevReport(service);
-
-		Date initialDate = new Date(startDate);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String formattedInitialDate = sdf.format(initialDate);
-
-		Date finalDate = new Date(endDate);
-		SimpleDateFormat sdfFinal = new SimpleDateFormat("yyyy-MM-dd");
-		String formattedFinalDate = sdfFinal.format(finalDate);
-
-		createDirectory(REPORTS_HOME + "/" + username);
-
-		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
-				+ ".xlsx";
-
-		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
-
-		List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
-				new Date(endDate), pageIndex, pageSize);
-		Object[][] reportObjectArray = reportObjectList.toArray(new Object[0][0]);
-
-		int i = 1;
-		try {
-			for (Object[] obj : reportObjectArray) {
-				rows.add(new NewlyEnrolledAgywAndServices(i + "", String.valueOf(obj[0]), String.valueOf(obj[1]),
-						String.valueOf(obj[2]), String.valueOf(obj[3]), String.valueOf(obj[4]), String.valueOf(obj[5]),
-						String.valueOf(obj[6]), String.valueOf(obj[7]), String.valueOf(obj[8] != null ? obj[8] : ""),
-						String.valueOf(obj[9] != null ? obj[9] : ""), String.valueOf(obj[10]), String.valueOf(obj[11]),
-						String.valueOf(obj[12]), String.valueOf(obj[13]), String.valueOf(obj[14]),
-						String.valueOf(obj[15]), String.valueOf(obj[16]), String.valueOf(obj[17]),
-						String.valueOf(obj[18]), String.valueOf(obj[19]), String.valueOf(obj[20]),
-						String.valueOf(obj[21]), String.valueOf(obj[22] != null ? obj[22] : ""),
-						String.valueOf(obj[23] != null ? obj[23] : ""), String.valueOf(obj[24]),
-						String.valueOf(obj[25]), String.valueOf(obj[26]), String.valueOf(obj[27]),
-						String.valueOf(obj[28]), String.valueOf(obj[29]), String.valueOf(obj[30]),
-						String.valueOf(obj[31]), String.valueOf(obj[32]), String.valueOf(obj[33]),
-						String.valueOf(obj[34]), String.valueOf(obj[35]),
-						String.valueOf(obj[36] != null ? obj[36] : ""), String.valueOf(obj[37] != null ? obj[37] : ""),
-						String.valueOf(obj[38] != null ? obj[38] : ""), String.valueOf(obj[39])));
-				i++;
-			}
-
-			// Compile the .jrxml template to a .jasper file
-			InputStream jrxmlStream = AgywPrevController.class.getResourceAsStream(NEW_ENROLLED_REPORT_TEMPLATE);
-			JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
-
-			// Convert data to a JRBeanCollectionDataSource
-			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(rows);
-
-			// Create a Map to store report parameters
-			Map<String, Object> parameters = new HashMap<>();
-			parameters.put("date_start", formattedInitialDate);
-			parameters.put("date_end", formattedFinalDate);
-			parameters.put("slab", "Data de Início:");
-			parameters.put("elab", "Data de Fim:");
-
-			// Generate the report
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-
-			// Apply the configuration to the exporter
-			JasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
-
-			// Export the report to XLSX
-			JRXlsxExporter exporter = new JRXlsxExporter(jasperReportsContext);
-			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(generatedFilePath));
-
-			// Set your preferred column width (in pixels)
-			exporter.setConfiguration(getXlsxExporterConfiguration());
-
-			exporter.exportReport();
-
-			System.out.println(generatedFilePath + ": generated and exported to XLSX with borders successfully.");
-
-		} catch (JRException e) {
-			e.printStackTrace();
-		}
-
-		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
 	}
 
 	public static <T> List<List<T>> splitList(List<T> originalList, int chunkSize) {
@@ -592,10 +509,137 @@ public class AgywPrevController {
 		return configuration;
 	}
 
-	@GetMapping("/excelDocumentFormat")
-	public ResponseEntity<String> excelDocumentFormat(@RequestParam(name = "filePath") String filePath)
-			throws IOException {
-		new ExcelDocumentFormatting(filePath).execute();
-		return new ResponseEntity<String>(filePath, HttpStatus.OK);
+	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
+	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesV2(@RequestParam(name = "province") String province,
+	        @RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
+	        @RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageIndex") int pageIndex,
+	        @RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username)
+	        throws IOException {
+
+	    AgywPrevReport report = new AgywPrevReport(service);
+
+	    Date initialDate = new Date(startDate);
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    String formattedInitialDate = sdf.format(initialDate);
+
+	    Date finalDate = new Date(endDate);
+	    String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
+
+	    createDirectory(REPORTS_HOME + "/" + username);
+
+	    String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_REPORT_NAME + "_"
+	            + province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
+	            + ".xlsx";
+	    
+	    long startTime = System.currentTimeMillis();
+        try {
+            // Set up streaming workbook
+            SXSSFWorkbook workbook = new SXSSFWorkbook();
+            workbook.setCompressTempFiles(true); // Enable compression of temporary files
+            
+            // Create a sheet
+            Sheet sheet = workbook.createSheet("Sample Sheet");
+            
+            // Define headers
+            String[] headers = {
+                "#",
+                "Província",
+                "Distrito",
+                "Onde Mora",
+                "Ponto de Entrada",
+                "Organização",
+                "Data de Inscrição",
+                "Data de Registo",
+                "Registado Por",
+                "Data da Última Actualização",
+                "Actualizado Por",
+                "NUI",
+                "Sexo",
+                "Idade (Registo)",
+                "Idade (Actual)",
+                "Faixa Etária (Registo)",
+                "Faixa Etária (Actual)",
+                "Data de Nascimento",
+                "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?",
+                "Com Quem Mora",
+                "Sustenta a Casa",
+                "É Órfã?",
+                "Vai à escola",
+                "Tem Deficiência",
+                "Tipo de Deficiência",
+                "Já foi casada",
+                "Já esteve grávida",
+                "Tem filhos",
+                "Está Grávida ou a Amamentar",
+                "Trabalha",
+                "Já fez teste de HIV",
+                "Área de Serviço",
+                "Serviço",
+                "Sub-Serviço",
+                "Pacote de Serviço",
+                "Ponto de Entrada de Serviço",
+                "Localização do Serviço",
+                "Data do Serviço",
+                "Provedor do Serviço",
+                "Outras Observações",
+                "Status"
+            };
+            
+            // Create a header row
+            Row headerRow = sheet.createRow(0);
+            // Write headers
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+            
+            // Insert data rows from the reportObjectList
+            List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate), new Date(endDate), pageIndex, pageSize);
+            int rowCount = 1; // start from row 1 (row 0 is for headers)
+            for (Object reportObject : reportObjectList) {
+                Row row = sheet.createRow(rowCount++);
+                // Write values to cells based on headers
+                for (int i = 0; i < headers.length; i++) {
+                    Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+                    if (value != null) {
+                        row.createCell(i).setCellValue(String.valueOf(value));
+                    }
+                }
+            }
+            
+            // Write the workbook content to a file
+            FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
+            workbook.write(fileOut);
+            fileOut.close();
+            
+            // Dispose of temporary files backing this workbook on disk
+            workbook.dispose();
+            
+            // Close the workbook
+            workbook.close();
+            
+            System.out.println("Excel file has been created successfully ! - path: "+generatedFilePath);
+            
+            long endTime = System.currentTimeMillis();
+            System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
+
+        } catch (IOException e) {
+        	e.printStackTrace();
+	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+	    return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
+	}
+	
+	// Method to retrieve value for a specific index from the reportObject
+	private static Object getValueAtIndex(Object reportObject, int index) {
+	    // Assuming reportObject is an array
+	    if (reportObject instanceof Object[]) {
+	        Object[] dataArray = (Object[]) reportObject;
+	        if (index >= 0 && index < dataArray.length) {
+	            return dataArray[index];
+	        }
+	    }
+	    return null;
 	}
 }
