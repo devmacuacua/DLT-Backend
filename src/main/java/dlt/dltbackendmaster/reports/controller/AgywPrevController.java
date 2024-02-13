@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -511,134 +512,147 @@ public class AgywPrevController {
 
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesV2(@RequestParam(name = "province") String province,
-	        @RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
-	        @RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageIndex") int pageIndex,
-	        @RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username)
-	        throws IOException {
+			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageIndex") int pageIndex,
+			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username)
+			throws IOException {
 
-	    AgywPrevReport report = new AgywPrevReport(service);
+		AgywPrevReport report = new AgywPrevReport(service);
 
-	    Date initialDate = new Date(startDate);
-	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	    String formattedInitialDate = sdf.format(initialDate);
+		Date initialDate = new Date(startDate);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedInitialDate = sdf.format(initialDate);
 
-	    Date finalDate = new Date(endDate);
-	    String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
+		Date finalDate = new Date(endDate);
+		String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
 
-	    createDirectory(REPORTS_HOME + "/" + username);
+		createDirectory(REPORTS_HOME + "/" + username);
 
-	    String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_REPORT_NAME + "_"
-	            + province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
-	            + ".xlsx";
-	    
-	    long startTime = System.currentTimeMillis();
-        try {
-            // Set up streaming workbook
-            SXSSFWorkbook workbook = new SXSSFWorkbook();
-            workbook.setCompressTempFiles(true); // Enable compression of temporary files
-            
-            // Create a sheet
-            Sheet sheet = workbook.createSheet("Sample Sheet");
-            
-            // Define headers
-            String[] headers = {
-                "Província",
-                "Distrito",
-                "Onde Mora",
-                "Ponto de Entrada",
-                "Organização",
-                "Data de Inscrição",
-                "Data de Registo",
-                "Registado Por",
-                "Data da Última Actualização",
-                "Actualizado Por",
-                "NUI",
-                "Sexo",
-                "Idade (Registo)",
-                "Idade (Actual)",
-                "Faixa Etária (Registo)",
-                "Faixa Etária (Actual)",
-                "Data de Nascimento",
-                "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?",
-                "Com Quem Mora",
-                "Sustenta a Casa",
-                "É Órfã?",
-                "Vai à escola",
-                "Tem Deficiência",
-                "Tipo de Deficiência",
-                "Já foi casada",
-                "Já esteve grávida",
-                "Tem filhos",
-                "Está Grávida ou a Amamentar",
-                "Trabalha",
-                "Já fez teste de HIV",
-                "Área de Serviço",
-                "Serviço",
-                "Sub-Serviço",
-                "Pacote de Serviço",
-                "Ponto de Entrada de Serviço",
-                "Localização do Serviço",
-                "Data do Serviço",
-                "Provedor do Serviço",
-                "Outras Observações",
-                "Status"
-            };
-            
-            // Create a header row
-            Row headerRow = sheet.createRow(0);
-            // Write headers
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-            }
-            
-            // Insert data rows from the reportObjectList
-            List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate), new Date(endDate), pageIndex, pageSize);
-            int rowCount = 1; // start from row 1 (row 0 is for headers)
-            for (Object reportObject : reportObjectList) {
-                Row row = sheet.createRow(rowCount++);
-                // Write values to cells based on headers
-                for (int i = 0; i < headers.length; i++) {
-                    Object value = getValueAtIndex(reportObject, i); // You need to implement this method
-                    if (value != null) {
-                        row.createCell(i).setCellValue(String.valueOf(value));
-                    }
-                }
-            }
-            
-            // Write the workbook content to a file
-            FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
-            workbook.write(fileOut);
-            fileOut.close();
-            
-            // Dispose of temporary files backing this workbook on disk
-            workbook.dispose();
-            
-            // Close the workbook
-            workbook.close();
-            
-            System.out.println("Excel file has been created successfully ! - path: "+generatedFilePath);
-            
-            long endTime = System.currentTimeMillis();
-            System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
+		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_REPORT_NAME + "_"
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
+				+ ".xlsx";
 
-        } catch (IOException e) {
-        	e.printStackTrace();
-	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+		long startTime = System.currentTimeMillis();
+		try {
+			// Set up streaming workbook
+			SXSSFWorkbook workbook = new SXSSFWorkbook();
+			workbook.setCompressTempFiles(true); // Enable compression of temporary files
 
-	    return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
+			// Create a sheet
+			Sheet sheet = workbook.createSheet("Sample Sheet");
+
+			// Define Title
+			String titleHeaders = "LISTA DE RAMJ REGISTADAS NO DLT NO PERÍODO EM CONSIDERAÇÃO, SUAS VULNERABILIDADES E SERVIÇOS RECEBIDOS ";
+			// Create a header row
+			Row titleRow = sheet.createRow(0);
+			// Write Title
+			Cell titleCell = titleRow.createCell(0);
+			titleCell.setCellValue(titleHeaders);
+			// Merge the cells for the title
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 48));
+
+			// Define Initial Date
+			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
+			// Create a header row
+			Row initialHeaderRow = sheet.createRow(1);
+			// Write headers
+			for (int i = 0; i < initialDateHeaders.length; i++) {
+				Cell cell = initialHeaderRow.createCell(i);
+				cell.setCellValue(initialDateHeaders[i]);
+			}
+
+			// Define Final Date
+			String finalDateHeaders[] = { "Data de Fim:", formattedFinalDate };
+			// Create a header row
+			Row finalHeaderRow = sheet.createRow(2);
+			// Write headers
+			for (int i = 0; i < finalDateHeaders.length; i++) {
+				Cell cell = finalHeaderRow.createCell(i);
+				cell.setCellValue(finalDateHeaders[i]);
+			}
+
+			// Define Title
+			String[] sessionHeaders = { "Informação Demográfica", "Vulnerabilidades Gerais",
+					"Serviços e Sub-Serviços" };
+			// Create a header row
+			Row sessionRow = sheet.createRow(3);
+			// Write Title
+			for (int i = 0; i < sessionHeaders.length; i++) {
+				Cell cell = sessionRow.createCell(i * 16);
+				cell.setCellValue(sessionHeaders[i]);
+				// Merge cells
+				sheet.addMergedRegion(new CellRangeAddress(3, 3, i * 16, (i + 1) * 16 - 1));
+			}
+
+			// Define headers
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
+					"Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
+					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
+					"Faixa Etária (Actual)", "Data de Nascimento",
+					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?", "Com Quem Mora", "Sustenta a Casa",
+					"É Órfã?", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "Já foi casada",
+					"Já esteve grávida", "Tem filhos", "Está Grávida ou a Amamentar", "Trabalha", "Já fez teste de HIV",
+					"Área de Serviço", "Serviço", "Sub-Serviço", "Pacote de Serviço", "Ponto de Entrada de Serviço",
+					"Localização do Serviço", "Data do Serviço", "Provedor do Serviço", "Outras Observações",
+					"Status" };
+
+			// Create a header row
+			Row headerRow = sheet.createRow(4);
+			// Write headers
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(headers[i]);
+			}
+
+			// Insert data rows from the reportObjectList
+			List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
+					new Date(endDate), pageIndex, pageSize);
+			int rowCount = 5; // start from row 1 (row 0 is for headers)
+			for (Object reportObject : reportObjectList) {
+				Row row = sheet.createRow(rowCount++);
+				// Write values to cells based on headers
+				for (int i = 0; i < headers.length; i++) {
+					Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+					if (value != null) {
+						row.createCell(i).setCellValue(String.valueOf(value));
+					}
+				}
+			}
+
+			// Write the workbook content to a file
+			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
+			workbook.write(fileOut);
+			fileOut.close();
+
+			// Dispose of temporary files backing this workbook on disk
+			workbook.dispose();
+
+			// Close the workbook
+			workbook.close();
+
+			System.out.println("Excel file has been created successfully ! - path: " + generatedFilePath);
+
+			long endTime = System.currentTimeMillis();
+			System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
 	}
-	
+
 	// Method to retrieve value for a specific index from the reportObject
 	private static Object getValueAtIndex(Object reportObject, int index) {
-	    // Assuming reportObject is an array
-	    if (reportObject instanceof Object[]) {
-	        Object[] dataArray = (Object[]) reportObject;
-	        if (index >= 0 && index < dataArray.length) {
-	            return dataArray[index];
-	        }
-	    }
-	    return null;
+		// Assuming reportObject is an array
+		if (reportObject instanceof Object[]) {
+			Object[] dataArray = (Object[]) reportObject;
+			if (index >= 0 && index < dataArray.length) {
+				return dataArray[index];
+			}
+		}
+		return null;
 	}
+
 }
