@@ -658,10 +658,6 @@ public class AgywPrevController {
 			workbook.close();
 
 			System.out.println("Excel file has been created successfully ! - path: " + generatedFilePath);
-
-			long endTime = System.currentTimeMillis();
-			System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
