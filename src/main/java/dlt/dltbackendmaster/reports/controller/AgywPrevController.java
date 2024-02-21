@@ -543,15 +543,18 @@ public class AgywPrevController {
 
 			// Create a sheet
 			Sheet sheet = workbook.createSheet("Sheet");
-			
 			// Create font for bold style
 			Font boldFont = workbook.createFont();
 			boldFont.setBold(true);
 
 			// Apply bold font style to the cells in the header row
 			CellStyle boldCellStyle = workbook.createCellStyle();
-//			boldCellStyle.setFont(boldFont);
-			boldCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			boldCellStyle.setFont(boldFont);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle alignCellStyle = workbook.createCellStyle();
+			// alignCellStyle.setFont(boldFont);
+			alignCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
 			// Define Title
 			String titleHeaders = "LISTA DE RAMJ REGISTADAS NO DLT NO PERÍODO EM CONSIDERAÇÃO, SUAS VULNERABILIDADES E SERVIÇOS RECEBIDOS ";
@@ -560,6 +563,7 @@ public class AgywPrevController {
 			// Write Title
 			Cell titleCell = titleRow.createCell(0);
 			titleCell.setCellValue(titleHeaders);
+			// titleCell.setCellStyle(boldCellStyle);
 			// Merge the cells for the title
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
 
@@ -571,6 +575,7 @@ public class AgywPrevController {
 			for (int i = 0; i < initialDateHeaders.length; i++) {
 				Cell cell = initialHeaderRow.createCell(i);
 				cell.setCellValue(initialDateHeaders[i]);
+				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Define Final Date
@@ -581,6 +586,7 @@ public class AgywPrevController {
 			for (int i = 0; i < finalDateHeaders.length; i++) {
 				Cell cell = finalHeaderRow.createCell(i);
 				cell.setCellValue(finalDateHeaders[i]);
+				cell.setCellStyle(boldCellStyle);
 			}
 
 			// Create a header row
@@ -589,15 +595,15 @@ public class AgywPrevController {
 
 			Cell cell1 = sessionRow.createCell(0);
 			cell1.setCellValue("Informação Demográfica");
-			cell1.setCellStyle(boldCellStyle); 
+			cell1.setCellStyle(alignCellStyle);
 
 			Cell cell2 = sessionRow.createCell(17);
 			cell2.setCellValue("Vulnerabilidades Gerais");
-			cell2.setCellStyle(boldCellStyle); 
+			cell2.setCellStyle(alignCellStyle);
 
 			Cell cell3 = sessionRow.createCell(30);
 			cell3.setCellValue("Serviços e Sub-Serviços");
-			cell3.setCellStyle(boldCellStyle); 
+			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
 			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
@@ -622,6 +628,7 @@ public class AgywPrevController {
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
+				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Insert data rows from the reportObjectList
