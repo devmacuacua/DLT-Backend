@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -539,7 +542,16 @@ public class AgywPrevController {
 			workbook.setCompressTempFiles(true); // Enable compression of temporary files
 
 			// Create a sheet
-			Sheet sheet = workbook.createSheet("Sample Sheet");
+			Sheet sheet = workbook.createSheet("Sheet");
+			
+			// Create font for bold style
+			Font boldFont = workbook.createFont();
+			boldFont.setBold(true);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle boldCellStyle = workbook.createCellStyle();
+//			boldCellStyle.setFont(boldFont);
+			boldCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
 			// Define Title
 			String titleHeaders = "LISTA DE RAMJ REGISTADAS NO DLT NO PERÍODO EM CONSIDERAÇÃO, SUAS VULNERABILIDADES E SERVIÇOS RECEBIDOS ";
@@ -549,7 +561,7 @@ public class AgywPrevController {
 			Cell titleCell = titleRow.createCell(0);
 			titleCell.setCellValue(titleHeaders);
 			// Merge the cells for the title
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 48));
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
 
 			// Define Initial Date
 			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
@@ -571,18 +583,26 @@ public class AgywPrevController {
 				cell.setCellValue(finalDateHeaders[i]);
 			}
 
-			// Define Title
-			String[] sessionHeaders = { "Informação Demográfica", "Vulnerabilidades Gerais",
-					"Serviços e Sub-Serviços" };
 			// Create a header row
 			Row sessionRow = sheet.createRow(3);
-			// Write Title
-			for (int i = 0; i < sessionHeaders.length; i++) {
-				Cell cell = sessionRow.createCell(i * 16);
-				cell.setCellValue(sessionHeaders[i]);
-				// Merge cells
-				sheet.addMergedRegion(new CellRangeAddress(3, 3, i * 16, (i + 1) * 16 - 1));
-			}
+			// Write Title and Merge cells for session headers
+
+			Cell cell1 = sessionRow.createCell(0);
+			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellStyle(boldCellStyle); 
+
+			Cell cell2 = sessionRow.createCell(17);
+			cell2.setCellValue("Vulnerabilidades Gerais");
+			cell2.setCellStyle(boldCellStyle); 
+
+			Cell cell3 = sessionRow.createCell(30);
+			cell3.setCellValue("Serviços e Sub-Serviços");
+			cell3.setCellStyle(boldCellStyle); 
+
+			// Merge cells for session headers
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 17, 29)); // Merge next 13 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
