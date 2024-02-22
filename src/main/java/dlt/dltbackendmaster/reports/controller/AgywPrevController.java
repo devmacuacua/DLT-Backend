@@ -21,8 +21,6 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.streaming.SXSSFRow;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -39,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.reports.AgywPrevReport;
+import dlt.dltbackendmaster.reports.ExcelDocumentFormatting;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.ReportResponse;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
@@ -513,6 +512,13 @@ public class AgywPrevController {
 		return configuration;
 	}
 
+	@GetMapping("/excelDocumentFormat")
+	public ResponseEntity<String> excelDocumentFormat(@RequestParam(name = "filePath") String filePath)
+			throws IOException {
+		new ExcelDocumentFormatting(filePath).execute();
+		return new ResponseEntity<String>(filePath, HttpStatus.OK);
+	}
+
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesV2(@RequestParam(name = "province") String province,
 			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
@@ -535,7 +541,6 @@ public class AgywPrevController {
 				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
 				+ ".xlsx";
 
-		long startTime = System.currentTimeMillis();
 		try {
 			// Set up streaming workbook
 			SXSSFWorkbook workbook = new SXSSFWorkbook();
@@ -563,7 +568,8 @@ public class AgywPrevController {
 			// Write Title
 			Cell titleCell = titleRow.createCell(0);
 			titleCell.setCellValue(titleHeaders);
-			// titleCell.setCellStyle(boldCellStyle);
+//			titleCell.setCellStyle(boldCellStyle);
+
 			// Merge the cells for the title
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
 
@@ -586,7 +592,7 @@ public class AgywPrevController {
 			for (int i = 0; i < finalDateHeaders.length; i++) {
 				Cell cell = finalHeaderRow.createCell(i);
 				cell.setCellValue(finalDateHeaders[i]);
-				cell.setCellStyle(boldCellStyle);
+//				cell.setCellStyle(boldCellStyle);
 			}
 
 			// Create a header row
