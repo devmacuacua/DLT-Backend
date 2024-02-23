@@ -211,7 +211,6 @@ public class AgywPrevController {
 			// Write Title
 			Cell titleCell = titleRow.createCell(0);
 			titleCell.setCellValue(titleHeaders);
-//			titleCell.setCellStyle(boldCellStyle);
 
 			// Merge the cells for the title
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
@@ -224,7 +223,6 @@ public class AgywPrevController {
 			for (int i = 0; i < initialDateHeaders.length; i++) {
 				Cell cell = initialHeaderRow.createCell(i);
 				cell.setCellValue(initialDateHeaders[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Define Final Date
@@ -235,7 +233,6 @@ public class AgywPrevController {
 			for (int i = 0; i < finalDateHeaders.length; i++) {
 				Cell cell = finalHeaderRow.createCell(i);
 				cell.setCellValue(finalDateHeaders[i]);
-//				cell.setCellStyle(boldCellStyle);
 			}
 
 			// Create a header row
@@ -286,7 +283,6 @@ public class AgywPrevController {
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Insert data rows from the reportObjectList
@@ -392,7 +388,6 @@ public class AgywPrevController {
 			// Write Title
 			Cell titleCell = titleRow.createCell(0);
 			titleCell.setCellValue(titleHeaders);
-//			titleCell.setCellStyle(boldCellStyle);
 
 			// Merge the cells for the title
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
@@ -405,7 +400,6 @@ public class AgywPrevController {
 			for (int i = 0; i < initialDateHeaders.length; i++) {
 				Cell cell = initialHeaderRow.createCell(i);
 				cell.setCellValue(initialDateHeaders[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Define Final Date
@@ -416,7 +410,6 @@ public class AgywPrevController {
 			for (int i = 0; i < finalDateHeaders.length; i++) {
 				Cell cell = finalHeaderRow.createCell(i);
 				cell.setCellValue(finalDateHeaders[i]);
-//				cell.setCellStyle(boldCellStyle);
 			}
 
 			// Create a header row
@@ -458,7 +451,6 @@ public class AgywPrevController {
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Insert data rows from the reportObjectList
@@ -546,7 +538,6 @@ public class AgywPrevController {
 			// Write Title
 			Cell titleCell = titleRow.createCell(0);
 			titleCell.setCellValue(titleHeaders);
-//			titleCell.setCellStyle(boldCellStyle);
 
 			// Merge the cells for the title
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
@@ -559,7 +550,6 @@ public class AgywPrevController {
 			for (int i = 0; i < initialDateHeaders.length; i++) {
 				Cell cell = initialHeaderRow.createCell(i);
 				cell.setCellValue(initialDateHeaders[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Define Final Date
@@ -570,7 +560,6 @@ public class AgywPrevController {
 			for (int i = 0; i < finalDateHeaders.length; i++) {
 				Cell cell = finalHeaderRow.createCell(i);
 				cell.setCellValue(finalDateHeaders[i]);
-//				cell.setCellStyle(boldCellStyle);
 			}
 
 			// Create a header row
@@ -612,7 +601,6 @@ public class AgywPrevController {
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Insert data rows from the reportObjectList
@@ -699,7 +687,6 @@ public class AgywPrevController {
 			// Write Title
 			Cell titleCell = titleRow.createCell(0);
 			titleCell.setCellValue(titleHeaders);
-//			titleCell.setCellStyle(boldCellStyle);
 
 			// Merge the cells for the title
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
@@ -712,7 +699,6 @@ public class AgywPrevController {
 			for (int i = 0; i < initialDateHeaders.length; i++) {
 				Cell cell = initialHeaderRow.createCell(i);
 				cell.setCellValue(initialDateHeaders[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Define Final Date
@@ -723,7 +709,6 @@ public class AgywPrevController {
 			for (int i = 0; i < finalDateHeaders.length; i++) {
 				Cell cell = finalHeaderRow.createCell(i);
 				cell.setCellValue(finalDateHeaders[i]);
-//				cell.setCellStyle(boldCellStyle);
 			}
 
 			// Create a header row
@@ -765,7 +750,6 @@ public class AgywPrevController {
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
-				// cell.setCellStyle(boldCellStyle);
 			}
 
 			// Insert data rows from the reportObjectList
