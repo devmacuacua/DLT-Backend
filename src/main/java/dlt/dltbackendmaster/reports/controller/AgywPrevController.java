@@ -81,24 +81,6 @@ public class AgywPrevController {
 		}
 	}
 
-	@GetMapping(produces = "application/json", path = "/countNewlyEnrolledAgywAndServices")
-	public ResponseEntity<List<Object>> countNewlyEnrolledAgywAndServices(
-			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
-			@RequestParam(name = "endDate") Long endDate) {
-
-		AgywPrevReport report = new AgywPrevReport(service);
-
-		try {
-			List<Object> reportObject = report.countNewlyEnrolledAgywAndServices(districts, new Date(startDate),
-					new Date(endDate));
-
-			return new ResponseEntity<>(reportObject, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	public static <T> List<List<T>> splitList(List<T> originalList, int chunkSize) {
 		List<List<T>> sublists = new ArrayList<>();
 		for (int i = 0; i < originalList.size(); i += chunkSize) {
@@ -318,24 +300,6 @@ public class AgywPrevController {
 		}
 
 		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
-	}
-
-	@GetMapping(produces = "application/json", path = "/countBeneficiariesVulnerabilitiesAndServices")
-	public ResponseEntity<List<Object>> countBeneficiariesVulnerabilitiesAndServices(
-			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
-			@RequestParam(name = "endDate") Long endDate) {
-
-		AgywPrevReport report = new AgywPrevReport(service);
-
-		try {
-			List<Object> reportObject = report.countBeneficiariesVulnerabilitiesAndServices(districts,
-					new Date(startDate), new Date(endDate));
-
-			return new ResponseEntity<>(reportObject, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 	}
 
 	@GetMapping(path = "/getBeneficiariesVulnerabilitiesAndServices")
