@@ -270,6 +270,12 @@ public class AgywPrevController {
 			// Insert data rows from the reportObjectList
 			List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServicesSummary(districts,
 					new Date(startDate), new Date(endDate), pageIndex, pageSize);
+			
+			if(reportObjectList.isEmpty()) {
+				workbook.close();
+				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
+			}
+			
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			for (Object reportObject : reportObjectList) {
 				Row row = sheet.createRow(rowCount++);
@@ -420,6 +426,12 @@ public class AgywPrevController {
 			// Insert data rows from the reportObjectList
 			List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServices(districts,
 					new Date(startDate), new Date(endDate), pageIndex, pageSize);
+			
+			if(reportObjectList.isEmpty()) {
+				workbook.close();
+				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
+			}
+			
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			for (Object reportObject : reportObjectList) {
 				Row row = sheet.createRow(rowCount++);
@@ -570,6 +582,12 @@ public class AgywPrevController {
 			// Insert data rows from the reportObjectList
 			List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServicesSummary(districts,
 					new Date(startDate), new Date(endDate), pageIndex, pageSize);
+			
+			if(reportObjectList.isEmpty()) {
+				workbook.close();
+				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
+			}
+			
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			for (Object reportObject : reportObjectList) {
 				Row row = sheet.createRow(rowCount++);
@@ -719,6 +737,12 @@ public class AgywPrevController {
 			// Insert data rows from the reportObjectList
 			List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
 					new Date(endDate), pageIndex, pageSize);
+			
+			if(reportObjectList.isEmpty()) {
+				workbook.close();
+				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
+			}
+			
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			for (Object reportObject : reportObjectList) {
 				Row row = sheet.createRow(rowCount++);
