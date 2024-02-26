@@ -805,7 +805,7 @@ public class AgywPrevQueries {
 			+ "	where v.service_date <= :endDate\n"
 			+ "	-- and v.vulneravel=1\n"
 			+ "	-- and pr.id=2 -- Provícias (1-Maputo Cidade, 2-Maputo Província, 3-Gaza, 4-Inhambane, 5-Sofala, 6-Manica, 7-Tete, 8-Zambézia, 9-Nampula, 10-Cabo-Delgado, 11-Niassa)\n"
-			+ "	and dt.id in (:districts)\n"
+			+ "	and dt.id = :district\n"
 			+ "	group by v.beneficiary_id\n"
 			+ ") a\n"
 			+ "left join dreams_db.references r on r.beneficiary_id=a.beneficiary_id and r.status=0\n"

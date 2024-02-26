@@ -163,8 +163,8 @@ public class AgywPrevController {
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_SUMMARY_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex
-				+ "_" + ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
+				+ ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -270,12 +270,12 @@ public class AgywPrevController {
 			// Insert data rows from the reportObjectList
 			List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServicesSummary(districts,
 					new Date(startDate), new Date(endDate), pageIndex, pageSize);
-			
-			if(reportObjectList.isEmpty()) {
+
+			if (reportObjectList.isEmpty()) {
 				workbook.close();
 				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
 			}
-			
+
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			for (Object reportObject : reportObjectList) {
 				Row row = sheet.createRow(rowCount++);
@@ -426,12 +426,12 @@ public class AgywPrevController {
 			// Insert data rows from the reportObjectList
 			List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServices(districts,
 					new Date(startDate), new Date(endDate), pageIndex, pageSize);
-			
-			if(reportObjectList.isEmpty()) {
+
+			if (reportObjectList.isEmpty()) {
 				workbook.close();
 				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
 			}
-			
+
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			for (Object reportObject : reportObjectList) {
 				Row row = sheet.createRow(rowCount++);
@@ -467,7 +467,7 @@ public class AgywPrevController {
 	@GetMapping(produces = "application/json", path = "/getBeneficiariesVulnerabilitiesAndServicesSummary")
 	public ResponseEntity<String> getBeneficiariesVulnerabilitiesAndServicesSummary(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
-			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,			
+			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
 			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
 			@RequestParam(name = "username") String username) {
 
@@ -578,24 +578,27 @@ public class AgywPrevController {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
 			}
-
-			// Insert data rows from the reportObjectList
-			List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServicesSummary(districts,
-					new Date(startDate), new Date(endDate), pageIndex, pageSize);
 			
-			if(reportObjectList.isEmpty()) {
-				workbook.close();
-				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
-			}
-			
+			int i;
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
-			for (Object reportObject : reportObjectList) {
-				Row row = sheet.createRow(rowCount++);
-				// Write values to cells based on headers
-				for (int i = 0; i < headers.length; i++) {
-					Object value = getValueAtIndex(reportObject, i); // You need to implement this method
-					if (value != null) {
-						row.createCell(i).setCellValue(String.valueOf(value));
+			for (int index = 0; index < districts.length; index++) {
+				// Insert data rows from the reportObjectList
+				List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServicesSummary(
+						districts[index], new Date(startDate), new Date(endDate));
+
+				if (reportObjectList.isEmpty()) {
+					workbook.close();
+					return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
+				}
+
+				for (Object reportObject : reportObjectList) {
+					Row row = sheet.createRow(rowCount++);
+					// Write values to cells based on headers
+					for (i = 0; i < headers.length; i++) {
+						Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+						if (value != null) {
+							row.createCell(i).setCellValue(String.valueOf(value));
+						}
 					}
 				}
 			}
@@ -737,12 +740,12 @@ public class AgywPrevController {
 			// Insert data rows from the reportObjectList
 			List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
 					new Date(endDate), pageIndex, pageSize);
-			
-			if(reportObjectList.isEmpty()) {
+
+			if (reportObjectList.isEmpty()) {
 				workbook.close();
 				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
 			}
-			
+
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			for (Object reportObject : reportObjectList) {
 				Row row = sheet.createRow(rowCount++);
