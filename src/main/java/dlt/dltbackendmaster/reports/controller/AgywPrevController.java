@@ -468,7 +468,6 @@ public class AgywPrevController {
 	public ResponseEntity<String> getBeneficiariesVulnerabilitiesAndServicesSummary(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
 			@RequestParam(name = "username") String username) {
 
 		AgywPrevReport report = new AgywPrevReport(service);
@@ -485,7 +484,7 @@ public class AgywPrevController {
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/"
 				+ VULNERABILITIES_AND_SERVICES_SUMMARY_REPORT_NAME + "_" + province.toUpperCase() + "_"
-				+ formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_" + ".xlsx";
+				+ formattedInitialDate + "_" + formattedFinalDate + "_" +  ".xlsx";
 
 		try {
 			// Set up streaming workbook
