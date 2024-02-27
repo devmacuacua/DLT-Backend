@@ -48,6 +48,8 @@ import dlt.dltbackendmaster.service.DAOService;
 @RestController
 @RequestMapping("/api/agyw-prev")
 public class AgywPrevController {
+	private static final String SHEET_LABEL = "Página";
+
 	private static final String REPORTS_HOME = System.getProperty("user.dir") + "/webapps/reports";
 
 	private static final String NEW_ENROLLED_REPORT_NAME = "DLT2.0_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS_POR";
@@ -147,8 +149,7 @@ public class AgywPrevController {
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesSummary(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
-			@RequestParam(name = "username") String username) {
+			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username) {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
@@ -163,8 +164,7 @@ public class AgywPrevController {
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_SUMMARY_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
-				+ ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -172,7 +172,7 @@ public class AgywPrevController {
 			workbook.setCompressTempFiles(true); // Enable compression of temporary files
 
 			// Create a sheet
-			Sheet sheet = workbook.createSheet("Sheet");
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
 			// Create font for bold style
 			Font boldFont = workbook.createFont();
 			boldFont.setBold(true);
@@ -267,23 +267,30 @@ public class AgywPrevController {
 				cell.setCellValue(headers[i]);
 			}
 
-			// Insert data rows from the reportObjectList
-			List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServicesSummary(districts,
-					new Date(startDate), new Date(endDate), pageIndex, pageSize);
-
-			if (reportObjectList.isEmpty()) {
-				workbook.close();
-				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
-			}
-
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
-			for (Object reportObject : reportObjectList) {
-				Row row = sheet.createRow(rowCount++);
-				// Write values to cells based on headers
-				for (int i = 0; i < headers.length; i++) {
-					Object value = getValueAtIndex(reportObject, i); // You need to implement this method
-					if (value != null) {
-						row.createCell(i).setCellValue(String.valueOf(value));
+			int currentSheet;
+
+			for (currentSheet = 0; currentSheet < 3; currentSheet++) {
+				// Insert data rows from the reportObjectList
+				List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServicesSummary(districts,
+						new Date(startDate), new Date(endDate), currentSheet, pageSize);
+
+				if (reportObjectList.isEmpty()) {
+					System.out.println("Its OK");
+				} else {
+					if (currentSheet != 0) {
+						rowCount = 0;
+						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
+					}
+					for (Object reportObject : reportObjectList) {
+						Row row = sheet.createRow(rowCount++);
+						// Write values to cells based on headers
+						for (int i = 0; i < headers.length; i++) {
+							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+							if (value != null) {
+								row.createCell(i).setCellValue(String.valueOf(value));
+							}
+						}
 					}
 				}
 			}
@@ -312,8 +319,8 @@ public class AgywPrevController {
 	public ResponseEntity<String> getBeneficiariesVulnerabilitiesAndServices(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
-			@RequestParam(name = "username") String username) throws IOException {
+			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username)
+			throws IOException {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
@@ -328,8 +335,7 @@ public class AgywPrevController {
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + VULNERABILITIES_AND_SERVICES_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
-				+ ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -337,7 +343,7 @@ public class AgywPrevController {
 			workbook.setCompressTempFiles(true); // Enable compression of temporary files
 
 			// Create a sheet
-			Sheet sheet = workbook.createSheet("Sheet");
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
 			// Create font for bold style
 			Font boldFont = workbook.createFont();
 			boldFont.setBold(true);
@@ -423,23 +429,30 @@ public class AgywPrevController {
 				cell.setCellValue(headers[i]);
 			}
 
-			// Insert data rows from the reportObjectList
-			List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServices(districts,
-					new Date(startDate), new Date(endDate), pageIndex, pageSize);
-
-			if (reportObjectList.isEmpty()) {
-				workbook.close();
-				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
-			}
-
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
-			for (Object reportObject : reportObjectList) {
-				Row row = sheet.createRow(rowCount++);
-				// Write values to cells based on headers
-				for (int i = 0; i < headers.length; i++) {
-					Object value = getValueAtIndex(reportObject, i); // You need to implement this method
-					if (value != null) {
-						row.createCell(i).setCellValue(String.valueOf(value));
+			int currentSheet;
+
+			for (currentSheet = 0; currentSheet < 3; currentSheet++) {
+				// Insert data rows from the reportObjectList
+				List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServices(districts,
+						new Date(startDate), new Date(endDate), currentSheet, pageSize);
+
+				if (reportObjectList.isEmpty()) {
+					System.out.println("Its OK");
+				} else {
+					if (currentSheet != 0) {
+						rowCount = 0;
+						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
+					}
+					for (Object reportObject : reportObjectList) {
+						Row row = sheet.createRow(rowCount++);
+						// Write values to cells based on headers
+						for (int i = 0; i < headers.length; i++) {
+							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+							if (value != null) {
+								row.createCell(i).setCellValue(String.valueOf(value));
+							}
+						}
 					}
 				}
 			}
@@ -484,7 +497,7 @@ public class AgywPrevController {
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/"
 				+ VULNERABILITIES_AND_SERVICES_SUMMARY_REPORT_NAME + "_" + province.toUpperCase() + "_"
-				+ formattedInitialDate + "_" + formattedFinalDate + "_" +  ".xlsx";
+				+ formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -492,7 +505,7 @@ public class AgywPrevController {
 			workbook.setCompressTempFiles(true); // Enable compression of temporary files
 
 			// Create a sheet
-			Sheet sheet = workbook.createSheet("Sheet");
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
 			// Create font for bold style
 			Font boldFont = workbook.createFont();
 			boldFont.setBold(true);
@@ -577,19 +590,21 @@ public class AgywPrevController {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
 			}
-			
+
 			int i;
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
+			int currentSheet = 1;
+
 			for (int index = 0; index < districts.length; index++) {
 				// Insert data rows from the reportObjectList
 				List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServicesSummary(
 						districts[index], new Date(startDate), new Date(endDate));
 
-				if (reportObjectList.isEmpty()) {
-					workbook.close();
-					return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
+				if (rowCount > 1000000) {
+					rowCount = 0;
+					int seq = currentSheet + 1;
+					sheet = workbook.createSheet(SHEET_LABEL + seq);
 				}
-
 				for (Object reportObject : reportObjectList) {
 					Row row = sheet.createRow(rowCount++);
 					// Write values to cells based on headers
@@ -625,9 +640,8 @@ public class AgywPrevController {
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(@RequestParam(name = "province") String province,
 			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
-			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageIndex") int pageIndex,
-			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username)
-			throws IOException {
+			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "username") String username) throws IOException {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
@@ -641,8 +655,7 @@ public class AgywPrevController {
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
-				+ ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -650,7 +663,7 @@ public class AgywPrevController {
 			workbook.setCompressTempFiles(true); // Enable compression of temporary files
 
 			// Create a sheet
-			Sheet sheet = workbook.createSheet("Sheet");
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
 			// Create font for bold style
 			Font boldFont = workbook.createFont();
 			boldFont.setBold(true);
@@ -736,27 +749,32 @@ public class AgywPrevController {
 				cell.setCellValue(headers[i]);
 			}
 
-			// Insert data rows from the reportObjectList
-			List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
-					new Date(endDate), pageIndex, pageSize);
-
-			if (reportObjectList.isEmpty()) {
-				workbook.close();
-				return new ResponseEntity<>(null, HttpStatus.LOOP_DETECTED);
-			}
-
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
-			for (Object reportObject : reportObjectList) {
-				Row row = sheet.createRow(rowCount++);
-				// Write values to cells based on headers
-				for (int i = 0; i < headers.length; i++) {
-					Object value = getValueAtIndex(reportObject, i); // You need to implement this method
-					if (value != null) {
-						row.createCell(i).setCellValue(String.valueOf(value));
+			int currentSheet;
+
+			for (currentSheet = 0; currentSheet < 3; currentSheet++) {
+				List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
+						new Date(endDate), currentSheet, pageSize);
+
+				if (reportObjectList.isEmpty()) {
+					System.out.println("Its OK");
+				} else {
+					if (currentSheet != 0) {
+						rowCount = 0;
+						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
+					}
+					for (Object reportObject : reportObjectList) {
+						Row row = sheet.createRow(rowCount++);
+						// Write values to cells based on headers
+						for (int i = 0; i < headers.length; i++) {
+							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+							if (value != null) {
+								row.createCell(i).setCellValue(String.valueOf(value));
+							}
+						}
 					}
 				}
 			}
-
 			// Write the workbook content to a file
 			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
 			workbook.write(fileOut);
