@@ -48,6 +48,8 @@ import dlt.dltbackendmaster.service.DAOService;
 @RestController
 @RequestMapping("/api/agyw-prev")
 public class AgywPrevController {
+	private static final int MAX_ROWS_NUMBER = 1000000;
+
 	private static final String SHEET_LABEL = "Página";
 
 	private static final String REPORTS_HOME = System.getProperty("user.dir") + "/webapps/reports";
@@ -152,6 +154,8 @@ public class AgywPrevController {
 			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username) {
 
 		AgywPrevReport report = new AgywPrevReport(service);
+
+		boolean isEndOfCycle = false;
 
 		Date initialDate = new Date(startDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -270,14 +274,16 @@ public class AgywPrevController {
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			int currentSheet;
 
-			for (currentSheet = 0; currentSheet < 3; currentSheet++) {
-				// Insert data rows from the reportObjectList
-				List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServicesSummary(districts,
-						new Date(startDate), new Date(endDate), currentSheet, pageSize);
+			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
+				if (!isEndOfCycle) {
+					// Insert data rows from the reportObjectList
+					List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServicesSummary(districts,
+							new Date(startDate), new Date(endDate), currentSheet, pageSize);
 
-				if (reportObjectList.isEmpty()) {
-					System.out.println("Its OK");
-				} else {
+					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
+						isEndOfCycle = true;
+					}
+
 					if (currentSheet != 0) {
 						rowCount = 0;
 						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
@@ -292,6 +298,8 @@ public class AgywPrevController {
 							}
 						}
 					}
+				} else {
+					break;
 				}
 			}
 
@@ -323,6 +331,8 @@ public class AgywPrevController {
 			throws IOException {
 
 		AgywPrevReport report = new AgywPrevReport(service);
+
+		boolean isEndOfCycle = false;
 
 		Date initialDate = new Date(startDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -432,14 +442,16 @@ public class AgywPrevController {
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			int currentSheet;
 
-			for (currentSheet = 0; currentSheet < 3; currentSheet++) {
-				// Insert data rows from the reportObjectList
-				List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServices(districts,
-						new Date(startDate), new Date(endDate), currentSheet, pageSize);
+			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
+				if (!isEndOfCycle) {
+					// Insert data rows from the reportObjectList
+					List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServices(districts,
+							new Date(startDate), new Date(endDate), currentSheet, pageSize);
 
-				if (reportObjectList.isEmpty()) {
-					System.out.println("Its OK");
-				} else {
+					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
+						isEndOfCycle = true;
+					}
+
 					if (currentSheet != 0) {
 						rowCount = 0;
 						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
@@ -454,6 +466,8 @@ public class AgywPrevController {
 							}
 						}
 					}
+				} else {
+					break;
 				}
 			}
 
@@ -572,16 +586,25 @@ public class AgywPrevController {
 			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
-					"Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
-					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
-					"Faixa Etária (Actual)", "Data de Nascimento",
-					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?", "Com Quem Mora", "Sustenta a Casa",
-					"É Órfã?", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "Já foi casada",
-					"Já esteve grávida", "Tem filhos", "Está Grávida ou a Amamentar", "Trabalha", "Já fez teste de HIV",
-					"Área de Serviço", "Serviço", "Sub-Serviço", "Pacote de Serviço", "Ponto de Entrada de Serviço",
-					"Localização do Serviço", "Data do Serviço", "Provedor do Serviço", "Outras Observações",
-					"Status" };
+			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",
+					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?",
+					"Referências Clinicas não atendidas", "Referências Comunitárias não atendidas",
+					"Sessões de Recursos Sociais", "Data da Última Sessão: Recursos Sociais",
+					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção do VBG",
+					"Data da Última Sessão: VBG", "Sessões Educativas Incluindo SSR (No SAAJ) Primário para: 10-14",
+					"Data da Última Sessão: SAAJ", "Sessões de Literacia Financeira",
+					"Data da Última Sessão: Literacia Financeira",
+					"Aconselhamento e Testagem em Saúde Primário para: 15+ ou Sexualmente Activas",
+					"Data da Última Sessão: ATS",
+					"Promoção e Provisão de Preservativos Primário para: 15+ ou Sexualmente Activas",
+					"Data da Última Sessão: Promoção e Provisão de Preservativos",
+					"Promoção e Provisão de Contracepção", "Data da Última Sessão: Promoção e Provisão de Contracepção",
+					"Abordagens Sócio Económicas Combinadas",
+					"Data da Última Sessão: Abordagens Sócio Económicas Combinadas", "Subsídio Escolar",
+					"Data da Última Sessão: Subsídio Escolar", "Cuidados Pós Violência (Comunitários)",
+					"Data da Última Sessão: Cuidados Pós Violência (Comunitários)", "Cuidados Pós Violência (Clinicos)",
+					"Data da Última Sessão: Cuidados Pós Violência (Clinicos)", "Outros Serviços do SAAJ",
+					"Data da Última Sessão: Outros Serviços do SAAJ", "PrEP", "Data da Última Sessão: PrEP" };
 
 			// Create a header row
 			Row headerRow = sheet.createRow(4);
@@ -644,6 +667,8 @@ public class AgywPrevController {
 			@RequestParam(name = "username") String username) throws IOException {
 
 		AgywPrevReport report = new AgywPrevReport(service);
+
+		boolean isEndOfCycle = false;
 
 		Date initialDate = new Date(startDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -752,13 +777,14 @@ public class AgywPrevController {
 			int rowCount = 5; // start from row 1 (row 0 is for headers)
 			int currentSheet;
 
-			for (currentSheet = 0; currentSheet < 3; currentSheet++) {
-				List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
-						new Date(endDate), currentSheet, pageSize);
+			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
+				if (!isEndOfCycle) {
+					List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts,
+							new Date(startDate), new Date(endDate), currentSheet, pageSize);
 
-				if (reportObjectList.isEmpty()) {
-					System.out.println("Its OK");
-				} else {
+					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
+						isEndOfCycle = true;
+					}
 					if (currentSheet != 0) {
 						rowCount = 0;
 						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
@@ -773,6 +799,8 @@ public class AgywPrevController {
 							}
 						}
 					}
+				} else {
+					break;
 				}
 			}
 			// Write the workbook content to a file
