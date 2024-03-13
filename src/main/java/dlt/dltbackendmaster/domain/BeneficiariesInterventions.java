@@ -70,11 +70,15 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id in :beneficiaries_ids and b.dateCreated >= :lastpulledat "),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiariesIdsAndDateUpdated", 
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id in :beneficiaries_ids and b.dateCreated < :lastpulledat and b.dateUpdated >= :lastpulledat "),
-	@NamedQuery(name = "BeneficiaryIntervention.findInterventionsPerBeneficiary", 
-		query = " select count(inter.beneficiaries.id) as interventions, inter.beneficiaries.id as beneficiary_id"
-				+ " from BeneficiariesInterventions inter "
-				+ " where inter.status = 1 "
-				+ " group by inter.beneficiaries.id " ),
+	@NamedQuery(name = "BeneficiaryIntervention.countAllInterventionsAndbByServiceType",
+		    query = "SELECT " +
+		            "    inter.beneficiaries.id AS beneficiary_id, " +
+		            "    COUNT(inter.beneficiaries.id) AS interventions, " +
+		            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 1 THEN 1 END) AS clinicalInterventions, " +
+		            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 2 THEN 1 END) AS communityInterventions " +
+		            "FROM BeneficiariesInterventions inter " +
+		            "GROUP BY inter.beneficiaries.id"
+		),
 	@NamedQuery(name = "BeneficiaryIntervention.findByReferenceNotifyToOrBeneficiaryCreatedBy", query = "SELECT bi FROM BeneficiariesInterventions bi "
 															+ " where bi.beneficiaries.createdBy = :userId"
 															+ " or bi.beneficiaries.id in "
@@ -114,6 +118,25 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																		+ "left join fetch bi.beneficiaries b "
 																		+ "left join fetch b.partners "
 																    	+ "where b.id in :beneficiariesIds "),
+	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndServiceType",
+															    query = "SELECT " +
+															            "    inter.beneficiaries.id AS beneficiary_id, " +
+															            "    COUNT(inter.beneficiaries.id) AS interventions, " +
+															            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 1 THEN 1 END) AS clinicalInterventions, " +
+															            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 2 THEN 1 END) AS communityInterventions " +
+															            "FROM BeneficiariesInterventions inter " +
+															            "WHERE inter.beneficiaries.id = :beneficiaryId " +
+															            "GROUP BY inter.beneficiaries.id"),
+	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndAgeBandAndLevel",
+															    query = "SELECT " +
+															            "    inter.beneficiaries.id AS beneficiary_id, " +
+															            "    COUNT(inter.beneficiaries.id) AS interventions " +
+															            "FROM BeneficiariesInterventions inter " +
+															            "INNER JOIN fetch ServiceAgeband ab on inter.subServices.services.id = ab.serviceId " +
+															            "WHERE inter.beneficiaries.id = :beneficiaryId "+															      
+															            "AND ab.ageBand =:ageBand " +
+															            "AND ab.level = :level " +
+															            "GROUP BY inter.beneficiaries.id"),
 })
 public class BeneficiariesInterventions implements java.io.Serializable {
 	
@@ -241,7 +264,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "us_id", nullable = false)
+	@JoinColumn(name = "us_id", nullable = true)
 	@JsonProperty("us")
     @JsonSerialize(using = UsSerializer.class)
 	public Us getUs() {
@@ -419,7 +442,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.id.setDate(LocalDate.parse(model.getDate(), dtf));
         this.id.setSubServiceId(model.getSub_service_id());
-        this.us = new Us(model.getUs_id());
+		this.us = model.getUs_id() == 0 ? null : new Us(model.getUs_id());
         this.result = model.getResult();
         this.activistId = model.getActivist_id();
         this.entryPoint = model.getEntry_point();

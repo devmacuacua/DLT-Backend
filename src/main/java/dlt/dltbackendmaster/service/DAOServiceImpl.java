@@ -97,12 +97,22 @@ public class DAOServiceImpl implements DAOService {
 	public <T> List<T> GetAllEntityByNamedQuery(String query, Object... params) {
 		return repository.GetAllEntityByNamedQuery(query, params);
 	}
-	
+		
 	@Transactional
 	public <T> List<T> GetEntityByNamedQuery(String query,  String name, Date dateOfBirth, int locality) {
 		return repository.GetEntityByNamedQuery(query,  name,  dateOfBirth,  locality);
 	}
 	
+	@Transactional
+	public <T> List<T> GetEntityByNamedQuery(String query, int beneficiaryId, List<Integer> servicesIds) {
+		return repository.GetEntityByNamedQuery(query, beneficiaryId, servicesIds);
+	}
+	
+	@Transactional
+	public <T> List<T> GetEntityByNamedQuery(String query, Integer beneficiaryId, Integer ageBand, Integer level) {
+		return repository.GetEntityByNamedQuery(query, beneficiaryId, ageBand, level );
+	}
+
 	@Transactional
 	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict,
 			Object... params) {
@@ -139,8 +149,8 @@ public class DAOServiceImpl implements DAOService {
 	}
 	
 	@Transactional
-	public <T> List<T> GetByNamedNativeQuery(String query,  List<Integer> districts, Date startDate, Date endDate, Object... params) {
-		return repository.GetByNamedNativeQuery(query, districts,  startDate,  endDate, params);
+	public <T> List<T> GetByNamedNativeQuery(String query,  Integer district, Date startDate, Date endDate, Object... params) {
+		return repository.GetByNamedNativeQuery(query, district,  startDate,  endDate, params);
 	}
 	@Transactional
 	public <T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate, List<Integer> districts, Object... params) {

@@ -38,6 +38,10 @@ public interface DAORepository {
 
 	<T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
 	
+	<T> List<T> GetEntityByNamedQuery(String query, int beneficiaryId, List<Integer> servicesIds );
+	
+	<T> List<T> GetEntityByNamedQuery(String query, Integer beneficiaryId, Integer ageBand, Integer level);
+	
 	public <T> List<T> GetEntityByNamedQuery(String query, String name, Date dateOfBirth, int locality);
 	
 	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize,String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict , Object... params);
@@ -52,7 +56,7 @@ public interface DAORepository {
 	
 	<T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params);
 
-	<T> List<T> GetByNamedNativeQuery(String query, List<Integer> districts, Date startDate, Date endDate, Object... params);
+	<T> List<T> GetByNamedNativeQuery(String query, Integer district, Date startDate, Date endDate, Object... params);
 	
 	<T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate, List<Integer>districts, Object... params);
 

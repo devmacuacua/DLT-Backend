@@ -165,6 +165,32 @@ public class DAORepositoryImpl implements DAORepository {
 
 		return results;
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> List<T> GetEntityByNamedQuery(String query, int beneficiaryId,List<Integer> servicesIds) {
+		Query q = getCurrentSession().getNamedQuery(query);
+		
+		q.setParameter("beneficiaryId", beneficiaryId);
+		q.setParameter("servicesIds",servicesIds); 
+				
+		List<T> results = q.getResultList();
+
+		return results;
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> List<T> GetEntityByNamedQuery(String query, Integer beneficiaryId, Integer ageBand,
+			Integer level) {
+		Query q = getCurrentSession().getNamedQuery(query);
+		
+		q.setParameter("beneficiaryId", beneficiaryId);
+		q.setParameter("ageBand",ageBand); 
+		q.setParameter("level",level); 
+				
+		List<T> results = q.getResultList();
+
+		return results;
+	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> GetEntityByNamedQuery(String query, String name, Date dateOfBirth, int locality) {
@@ -292,16 +318,16 @@ public class DAORepositoryImpl implements DAORepository {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> List<T> GetByNamedNativeQuery(String query, List<Integer> districts, Date startDate, Date endDate, Object... params) {
+    public <T> List<T> GetByNamedNativeQuery(String query, Integer district, Date startDate, Date endDate, Object... params) {
         Query q = getCurrentSession().getNamedNativeQuery(query);
         int i = 0;
    
         for (Parameter param : q.getParameters()) {
-			if(!"districts".equals(param.getName()) && !"startDate".equals(param.getName()) && !"endDate".equals(param.getName())) {
+			if(!"district".equals(param.getName()) && !"startDate".equals(param.getName()) && !"endDate".equals(param.getName())) {
 				q.setParameter(param, params[i]);
 				i++;
 			}else {
-				q.setParameter("districts", districts);
+				q.setParameter("district", district);
 				q.setParameter("startDate", startDate);
 				q.setParameter("endDate", endDate); 
 			}	
