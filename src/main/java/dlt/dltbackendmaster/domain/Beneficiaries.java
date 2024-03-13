@@ -265,6 +265,13 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ ""),
 				@NamedQuery(name = "Beneficiary.getBeneficiariesByPartnerId", query = "SELECT  b FROM  Beneficiaries b "
 																+ " where b.partnerId = :partnerId "),
+				@NamedQuery(name = "Beneficiary.findByNameAndDateOfBirthAndLocality", query = "SELECT  b FROM  Beneficiaries b "
+																+ " where b.name =:name "
+																+ " and b.dateOfBirth =:dateOfBirth "
+																+ " and b.locality.id =:locality "												         											     
+												                ),
+				
+				
 })
 public class Beneficiaries implements java.io.Serializable
 {
