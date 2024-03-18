@@ -266,7 +266,11 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 				@NamedQuery(name = "Beneficiary.getBeneficiariesByPartnerId", query = "SELECT  b FROM  Beneficiaries b "
 																+ " where b.partnerId = :partnerId "),
 				@NamedQuery(name = "Beneficiary.findByNameAndDateOfBirthAndLocality", query = "SELECT  b FROM  Beneficiaries b "
-																+ " where b.name =:name "
+																+ " left join fetch b.neighborhood "
+																+ " left join fetch b.partners "
+																+ " left join fetch b.locality "
+																+ " left join fetch b.us "
+																+ " where b.name =:name "															
 																+ " and b.dateOfBirth =:dateOfBirth "
 																+ " and b.locality.id =:locality "												         											     
 												                ),
