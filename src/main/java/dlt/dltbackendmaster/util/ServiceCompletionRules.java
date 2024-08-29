@@ -371,69 +371,31 @@ public class ServiceCompletionRules {
 	}
 	
 	//Simplified
-	public static boolean completedSimplifiedAvanteRapariga(List<Integer> subServices) {
-		return subServices.containsAll(ServicesConstants.SIMPLIFIED_RAPARIGAS_MANDATORY);
-	}
 	
 	public static boolean completedSimplifiedAvanteRapariga(AgywPrev agywPrev) {
 		return agywPrev.getMandatory_social_assets() >= 9;
-	}
-	
-	public static boolean startedSimplifiedAvanteRapariga(List<Integer> subServices) {
-		return containsAny(ServicesConstants.SIMPLIFIED_RAPARIGAS_MANDATORY, subServices);
 	}
 	
 	public static boolean startedSimplifiedAvanteRapariga(AgywPrev agywPrev) {
 		return agywPrev.getMandatory_social_assets() > 0;
 	}
 	
-	public static boolean completedSimplifiedGuiaFacilitacao(List<Integer> subServices) {
-		return subServices.containsAll(ServicesConstants.SIMPLIFIED_GUIAO_FACILITACAO_MANDATORY);
-	}
-	
 	public static boolean completedSimplifiedGuiaFacilitacao(AgywPrev agywPrev) {
 		return agywPrev.getHiv_gbv_sessions() >= 8;
-	}
-	
-	public static boolean startedSimplifiedGuiaFacilitacao(List<Integer> subServices) {
-		return containsAny(ServicesConstants.SIMPLIFIED_GUIAO_FACILITACAO_MANDATORY, subServices);
 	}
 	
 	public static boolean startedSimplifiedGuiaFacilitacao(AgywPrev agywPrev) {
 		return agywPrev.getHiv_gbv_sessions() > 0;
 	}
 	
-	public static boolean completedSimplifiedSAAJEducationSessions(List<Integer> subServices) {
-		return subServices.containsAll(ServicesConstants.SIMPLIFIED_SESSOES_EDUCATIVAS_SAAJ_MANDATORY);
-	}
-	
 	public static boolean completedSimplifiedSAAJEducationSessions(AgywPrev agywPrev) {
 		return agywPrev.getSaaj_educational_sessions() >= 2;
-	}
-	
-	public static boolean startedSimplifiedSAAJEducationSessions(List<Integer> subServices) {
-		return containsAny(ServicesConstants.SIMPLIFIED_SESSOES_EDUCATIVAS_SAAJ_MANDATORY, subServices);
-	}
-	
-	public static boolean completedSimplifiedPostViolenceCare_CM(List<Integer> subServices) {
-		return subServices.contains(ServicesConstants.PROTECAO_CRIANCA);
-	}
-	
-	public static boolean startedSimplifiedFinancialLiteracyAflateen(List<Integer> subServices) {
-		return containsAny(ServicesConstants.SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATEEN, subServices);
-	}
-	public static boolean completedSimplifiedFinancialLiteracyAflatoun(List<Integer> subServices) {
-		return subServices.containsAll(ServicesConstants.SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATOUN);
 	}
 	
 	public static boolean completedSimplifiedFinancialLiteracyAflatoun(AgywPrev agywPrev) {
 		return agywPrev.getFinancial_literacy_aflatoun() >= 1;
 	}
-	
-	public static boolean completedSimplifiedFinancialLiteracyAflateen(List<Integer> subServices) {
-		return subServices.containsAll(ServicesConstants.SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATEEN);
-	}
-	
+
 	public static boolean completedSimplifiedFinancialLiteracyAflateen(AgywPrev agywPrev) {
 		return agywPrev.getFinancial_literacy_aflateen() >= 2;
 	}
