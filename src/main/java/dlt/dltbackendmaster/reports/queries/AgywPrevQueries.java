@@ -982,71 +982,103 @@ public class AgywPrevQueries {
 			"IF(current_age < 20 AND vblt_children = 1, 1, 0) + " +
 			"IF(current_age < 18 AND vblt_pregnant_or_breastfeeding = 1, 1, 0) + " +
 			"IF(current_age < 18 AND vblt_is_orphan = 1, 1, 0) + " +
-			"IF(vblt_tested_hiv < 2 AND date_created < '2022-01-01', 1, 0) + " +
+			"If(current_age < 18 and vblt_is_employed<>0,1,0) +\n" +
 			"IF(vblt_sexual_exploitation = 1, 1, 0) + " +
-			"IF(current_age < 20 AND vblt_is_migrant = 1, 1, 0) + " +
+			"IF(vblt_is_migrant = 1, 1, 0) + " +
 			"IF(current_age < 20 AND vblt_trafficking_victim = 1, 1, 0) + " +
 			"IF(current_age < 18 AND vblt_sexually_active = 1, 1, 0) + " +
 			"IF(vblt_multiple_partners = 1, 1, 0) + " +
 			"IF(vblt_gbv_victim = 1, 1, 0) + " +
 			"IF(current_age > 17 AND vblt_sex_worker = 1, 1, 0) + " +
 			"IF(vblt_alcohol_drugs_use = 1, 1, 0) + " +
-			"IF(vblt_sti_history = 1, 1, 0) AS vulnerabilities, " +
+			"IF(vblt_sti_history = 1, 1, 0) AS vulnerabilities, " +			
 			"SUM(CASE " +
-			"    WHEN (vblt_is_student = 1 AND sub_service_id IN (169, 170, 176, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 207, 208, 209)) OR " +
-			"         (vblt_is_student = 0 AND sub_service_id IN (164, 179, 180, 181, 182, 183, 196, 197, 198, 199, 200)) THEN 1 " +
+			"    WHEN (vblt_is_student = 0 AND sub_service_id IN (162,179,181,182,183,196,198,199,200)) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS mandatory_social_assets, " +
+			
 			"SUM(CASE " +
-			"    WHEN vblt_is_student = 1 AND sub_service_id IN (165, 166, 167, 168, 171, 172, 173, 174, 175) THEN 1 " +
+			"    WHEN vblt_is_student = 0 AND sub_service_id IN (157,158,159,160,161,162,163) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS other_social_assets, " +
-			"0 AS old_social_assets, " +
-			"0 AS saaj_educational_sessions, " +
-			"0 AS hiv_testing, " +
+			
+			"sum(case "+
+			"    when sub_service_id in (130,131,132,133,134,135,136,137,138,139,140,141,142,143,144) then 1\n"+
+		    "    else 0 " +
+			"end) old_social_assets,"+
+
+			"SUM(case when sub_service_id in (77,91) then 1 else 0 end) AS saaj_educational_sessions, " +
+
+			"SUM(case when sub_service_id in (26,67,68) then 1 else 0 end) AS hiv_testing, " +
+
 			"SUM(CASE " +
 			"    WHEN sub_service_id = 215 THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS financial_literacy, " +
-			"0 AS condoms, " +
-			"0 AS contraception, " +
-			"0 AS hiv_gbv_sessions, " +
+			
+			"SUM(case when sub_service_id in (2,52,107,108) then 1 else 0 end) AS condoms, " +
+
+			"SUM(case when sub_service_id in (4,5,6,7,96) then 1 else 0 end) AS contraception, " +
+
+			"SUM(case when sub_service_id in (201,202,203,204,205,206,210,211,212) then 1 else 0 end) AS hiv_gbv_sessions, " +
+
 			"SUM(CASE " +
 			"    WHEN sub_service_id IN (216) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS hiv_gbv_sessions_prep, " +
-			"0 AS hiv_sessions, " +
-			"0 AS gbv_sessions, " +
-			"0 AS school_allowance, " +
+			
+			"SUM(case when sub_service_id in (112,114,115,116,117,118,119,120,121,122,123,124,125,126) then 1 else 0 end) AS hiv_sessions, " +
+
+			"SUM(case when sub_service_id in (113) then 1 else 0 end) AS gbv_sessions, " +
+
+			"SUM(case when sub_service_id in (35,36,37) then 1 else 0 end) AS school_allowance, " +
+
 			"SUM(CASE " +
 			"    WHEN sub_service_id IN (9) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS post_violence_care_us, " +
-			"0 AS post_violence_care_us_others, " +
-			"0 AS post_violence_care_comunity, " +
-			"0 AS post_violence_care_comunity_others, " +
-			"0 AS other_saaj_services, " +
+
+			"SUM(case when sub_service_id in (8,10,11,12,1) then 1 else 0 end) AS post_violence_care_us_others, " +
+
+			"sum(case\n" +
+			"    when sub_service_id in (147) then 1\n"+
+			"    else 0\n" +
+			"end) post_violence_care_comunity,\n"+
+
+			"SUM( case when sub_service_id in (127,128,145,146,148) then 1 else 0 end) AS post_violence_care_comunity_others, " +
+
+			"SUM(case when sub_service_id in (69,70,71,72,73,74,75,92,93,95,109,110,111,151) then 1 else 0 end) AS other_saaj_services, " +
+
 			"SUM(CASE " +
 			"    WHEN sub_service_id IN (177, 178) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS social_assets_15_plus, " +
-			"0 AS social_economics_approaches, " +
+
+			"SUM(case when sub_service_id in (40,82,83,84,85,86,87,214,235) then 1 else 0 end) AS social_economics_approaches, " +
+
 			"SUM(CASE " +
 			"    WHEN sub_service_id IN (214, 235) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS disag_social_economics_approaches, " +
-			"0 AS prep, " +
-			"0 AS girl_violence_prevention, " +
+
+			"SUM(case when sub_service_id = 156 then 1 else 0 end) AS prep, " +
+
+			"SUM(case when sub_service_id in (196,197,198,199,200) then 1 else 0 end) AS girl_violence_prevention, " +
+
 			"SUM(CASE " +
 			"    WHEN sub_service_id IN (207, 208, 209) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS student_vilence_prevention, " +
+
 			"SUM(CASE " +
 			"    WHEN sub_service_id IN (210, 211, 212) THEN 1 " +
 			"    ELSE 0 " +
 			"END) AS violence_prevention_15_plus, " +
+
 			"0 AS financial_literacy_aflatoun, " +
-			"0 AS financial_literacy_aflateen, " +
+
+			"SUM(case when sub_service_id in (224,226) then 1 else 0 end) AS financial_literacy_aflateen, " +
+
 			"MIN(service_date) AS intervention_date, " +
 			"MAX(CASE " +
 			"    WHEN sub_service_id IN (214) THEN service_date " +
@@ -1058,7 +1090,8 @@ public class AgywPrevQueries {
 			"AND current_age_band <> 5 " +
 			"AND nui <> '' " +
 			"AND service_date IS NOT NULL " +
-			"AND service_date <> '' " +
+			"AND service_date <> '' "+ 
+			"And current_age > 9 " +
 			"AND service_date BETWEEN '2000-01-01' AND :end " +
 			"AND beneficiary_id IN ( " +
 			"    SELECT DISTINCT beneficiary_id " +

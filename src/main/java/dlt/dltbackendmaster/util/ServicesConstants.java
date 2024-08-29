@@ -503,4 +503,31 @@ public class ServicesConstants
                                                                                         DINHEIRO_EMPRESTADO,
                                                                                         FLUXOS_DINHEIRO,
                                                                                         IMAGINANDO_MEU_FUTURO);
+    
+    public static final List<Integer> SIMPLIFIED_RAPARIGAS_MANDATORY = Arrays.asList(RAPARIGAS_CORPO_MUDAR,
+																			            EVITAR_GRAVIDEZ_INDESEJADA,
+																			            SACO_OPACO_ITS_HIV,
+																			            RAPARIGAS_MODULO_2,
+																			            RAPARIGAS_AMIZADES_SAUDAVEIS,
+																			            COMO_COMUNICAR_PARCEIRO,
+																			            AVANCOS_INDESEJADOS,
+																			            RAPARIGAS_MODULO_3,
+																			            VALORES_DINHEIRO_PRENDAS);
+    
+    public static final List<Integer> SIMPLIFIED_GUIAO_FACILITACAO_MANDATORY = Arrays.asList(SEXUALIDADE,
+																			            ITS,
+																			            PREVENCAO_HIV,
+																			            HIV_EDUCACAO_TRATAMENTO,
+																			            GRAVIDEZ_CONTRACEPCAO,
+																			            RISCO_PARCEIROS_MULTIPLOS,
+																			            CASAMENTOS_PREMATUROS,
+																			            VBG);
+    
+    public static final List<Integer> SIMPLIFIED_SESSOES_EDUCATIVAS_SAAJ_MANDATORY = Arrays.asList(EDUCACAO_HIGIENE_MENSTRUAL,
+			   EDUCACAO_NUTRICAO);
+
+    public static final List<Integer> SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATOUN = Arrays.asList(NECESSIDADES_DESEJOS);
+
+    public static final List<Integer> SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATEEN = Arrays.asList(ORCAMENTOS_DINHEIRO_PODER,
+                                                                                        APRENDENDO_GASTAR);
 }
