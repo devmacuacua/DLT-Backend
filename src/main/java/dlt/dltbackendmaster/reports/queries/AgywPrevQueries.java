@@ -108,11 +108,11 @@ public class AgywPrevQueries {
 			+ "                        else 0\n" 
 			+ "                    end) social_assets_15_plus,\n"
 			+ "                    sum(case\n"
-			+ "                        when sub_service_id in (40,82,83,84,85,86,87,214,235) then 1\n"
+			+ "                        when sub_service_id in (40,82,83,84,85,86,87,214) then 1\n"
 			+ "                        else 0\n" 
 			+ "                    end) social_economics_approaches,\n"
 			+ "                    sum(case\n" 
-			+ "                        when sub_service_id in (214,235) then 1\n"
+			+ "                        when sub_service_id in (214) then 1\n"
 			+ "                        else 0\n" 
 			+ "                    end) disag_social_economics_approaches,\n"
 			+ "                    sum(case\n" 
@@ -143,7 +143,7 @@ public class AgywPrevQueries {
 			+ "                    max(case\n"
 			+ "                        when sub_service_id in (214) then service_date\n"
 			+ "                    end) approaches_date,"
-			+ "					   min(service_date) enrollment_date\n" 
+			+ "					   if(enrollment_date is null, min(service_date), enrollment_date) enrollment_date\n" 
 			+ "				from agyw_prev_mview\n"
 			+ "				where district_id in (:districts) "
 			+ "				and vulnerable = 1 "
@@ -1083,7 +1083,7 @@ public class AgywPrevQueries {
 			"MAX(CASE " +
 			"    WHEN sub_service_id IN (214) THEN service_date " +
 			"END) AS approaches_date, " +
-			"IF(enrollment_date IS NULL, MIN(service_date), enrollment_date) AS enrollment_date " +
+			"MIN(service_date) AS enrollment_date " +
 			"FROM agyw_prev_mview " +
 			"WHERE district_id IN (:districts) " +
 			"AND vulnerable = 1 " +
