@@ -393,7 +393,7 @@ public class ServiceCompletionRules {
 	}
 	
 	public static boolean completedSimplifiedFinancialLiteracyAflatoun(AgywPrev agywPrev) {
-		return agywPrev.getFinancial_literacy_aflatoun() >= 0;
+		return agywPrev.getFinancial_literacy_aflatoun() >= 1;
 	}
 
 	public static boolean completedSimplifiedFinancialLiteracyAflateen(AgywPrev agywPrev) {
