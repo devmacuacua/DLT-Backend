@@ -93,7 +93,7 @@ public class AgywPrevReport {
 
 	public Map<Integer, Map<String, ResultObject>> getAgywPrevResultObject(Integer[] districts, String startDate,
 			String endDate,String reportType) {
-		ReportObject reportObject = reportType=="1" ? process(districts, startDate, endDate) : processSimplified(districts, startDate, endDate);
+		ReportObject reportObject = reportType.equals("1") ? process(districts, startDate, endDate) : processSimplified(districts, startDate, endDate);
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();
 
 		for (Integer district : districts) {

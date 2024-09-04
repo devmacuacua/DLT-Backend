@@ -143,7 +143,7 @@ public class AgywPrevQueries {
 			+ "                    max(case\n"
 			+ "                        when sub_service_id in (214) then service_date\n"
 			+ "                    end) approaches_date,"
-			+ "					   if(enrollment_date is null, min(service_date), enrollment_date) enrollment_date\n" 
+			+ "					   min(service_date) enrollment_date\n" 
 			+ "				from agyw_prev_mview\n"
 			+ "				where district_id in (:districts) "
 			+ "				and vulnerable = 1 "

@@ -393,7 +393,7 @@ public class ServiceCompletionRules {
 	}
 	
 	public static boolean completedSimplifiedFinancialLiteracyAflatoun(AgywPrev agywPrev) {
-		return agywPrev.getFinancial_literacy_aflatoun() >= 1;
+		return agywPrev.getFinancial_literacy_aflatoun() >= 0;
 	}
 
 	public static boolean completedSimplifiedFinancialLiteracyAflateen(AgywPrev agywPrev) {
@@ -405,7 +405,7 @@ public class ServiceCompletionRules {
 	}
 	
 	public static boolean completedSimplifiedAvanteRaparigaViolencePrevention(AgywPrev agywPrev) {
-		return agywPrev.getGirl_violence_prevention() >= 4;
+		return agywPrev.getGirl_violence_prevention() > 4;
 	}
 
 	public static Integer getReferenceServiceStatus(Collection<BeneficiariesInterventions> interventions,
