@@ -32,7 +32,6 @@ import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPrep;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSAAJEducationSessions;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRapariga;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRaparigaViolencePrevention;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedFinancialLiteracyAflatoun;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedGuiaFacilitacao;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedFinancialLiteracyAflateen;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedSAAJEducationSessions;
@@ -93,7 +92,7 @@ public class AgywPrevReport {
 
 	public Map<Integer, Map<String, ResultObject>> getAgywPrevResultObject(Integer[] districts, String startDate,
 			String endDate,String reportType) {
-		ReportObject reportObject = reportType=="1" ? process(districts, startDate, endDate) : processSimplified(districts, startDate, endDate);
+		ReportObject reportObject = reportType.equals("1") ? process(districts, startDate, endDate) : processSimplified(districts, startDate, endDate);
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();
 
 		for (Integer district : districts) {
@@ -523,7 +522,7 @@ public class AgywPrevReport {
 
 		int total = 0;
 		for (int i = 0; i < ENROLLMENT_TIMES.length; i++) {
-			int subTotal = 0;
+			int enrollmentTimeSubTotal = 0;
 			for (int j = 0; j < AGE_BANDS.length - 1; j++) {
 				List<Integer> beneficiariesCompletedViolenceService = new ArrayList<>();
 				List<Integer> completedViolenceService = reportObject.getReportObject().get(district).get(AGE_BANDS[j])
@@ -537,12 +536,15 @@ public class AgywPrevReport {
 
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
 						.addAll(beneficiariesCompletedViolenceService);
-				int count = beneficiariesCompletedViolenceService.size();
-				subTotal += count;
-				resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[j], count);
+				
+				int ageBandTotal = beneficiariesCompletedViolenceService.size();
+				
+				enrollmentTimeSubTotal += ageBandTotal;
+				
+				resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[j], ageBandTotal);
 			}
-			resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[4], subTotal);
-			total += subTotal;
+			resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[4], enrollmentTimeSubTotal);
+			total += enrollmentTimeSubTotal;
 		}
 		resultObject.setTotal(total);
 		return resultObject;
@@ -732,14 +734,12 @@ public class AgywPrevReport {
 
 			if (agywPrev.getCurrent_age_band() == 1) { // 9-14
 				// AVANTE RAPARIGA
-				if (completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)
-						&& completedSimplifiedFinancialLiteracyAflatoun(agywPrev)) {
+				if (completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
 				}
-				if (completedSimplifiedAvanteRapariga(agywPrev) || completedSimplifiedSAAJEducationSessions(agywPrev)
-						|| completedSimplifiedFinancialLiteracyAflatoun(agywPrev)) {
+				if (completedSimplifiedAvanteRapariga(agywPrev) || completedSimplifiedSAAJEducationSessions(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());

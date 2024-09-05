@@ -19,6 +19,7 @@ public class AgywPrevQueries {
 			+ "                    if(current_age < 20 and vblt_children=1,1,0) +\n"
 			+ "                    if(current_age < 18 and vblt_pregnant_or_breastfeeding=1,1,0) +\n"
 			+ "                    if(current_age < 18 and vblt_is_orphan=1,1,0) +\n"
+			+ "                    if(current_age < 18 and vblt_is_employed<>0,1,0) +\n"
 			+ "                    if(vblt_tested_hiv < 2 and date_created < '2022-01-01',1,0) +\n"
 			+ "                    if(vblt_sexual_exploitation=1,1,0) +\n"
 			+ "                    if(current_age < 20 and vblt_is_migrant=1,1,0) +\n"
@@ -1083,7 +1084,7 @@ public class AgywPrevQueries {
 			"MAX(CASE " +
 			"    WHEN sub_service_id IN (214) THEN service_date " +
 			"END) AS approaches_date, " +
-			"IF(enrollment_date IS NULL, MIN(service_date), enrollment_date) AS enrollment_date " +
+			"MIN(service_date) AS enrollment_date " +
 			"FROM agyw_prev_mview " +
 			"WHERE district_id IN (:districts) " +
 			"AND vulnerable = 1 " +
