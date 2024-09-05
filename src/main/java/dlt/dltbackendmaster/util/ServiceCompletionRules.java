@@ -401,11 +401,11 @@ public class ServiceCompletionRules {
 	}
 	
 	public static boolean completedSimplifiedViolencePrevention15Plus(AgywPrev agywPrev) {
-		return agywPrev.getViolence_prevention_15_plus() >= 3; /**Revisado*/
+		return agywPrev.getViolence_prevention_15_plus() >= 2; 
 	}
 	
 	public static boolean completedSimplifiedAvanteRaparigaViolencePrevention(AgywPrev agywPrev) {
-		return agywPrev.getGirl_violence_prevention() > 4;
+		return agywPrev.getGirl_violence_prevention() >= 4;
 	}
 
 	public static Integer getReferenceServiceStatus(Collection<BeneficiariesInterventions> interventions,
