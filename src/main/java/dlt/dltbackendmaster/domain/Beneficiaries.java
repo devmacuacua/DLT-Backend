@@ -329,6 +329,9 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 										+ " and b.status IN (0,1) "
 										+ " order by b.id desc "
 										+ ""),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedAServiceButNotFullPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completedServices < 1"),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedExactlyPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completedServices < 2"),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedPrimaryPackageAndAdditionalServices", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completedServices < 3"), 
 })
 public class Beneficiaries implements java.io.Serializable
 {
@@ -392,7 +395,8 @@ public class Beneficiaries implements java.io.Serializable
     private Set<VulnerabilityHistory> vulnerabilityHistories = new HashSet<VulnerabilityHistory>(0);
     private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
     private Set<References> referenceses = new HashSet<References>(0);
-
+	private Integer completedServices;
+	
     public Beneficiaries() {}
 
     public Beneficiaries(Neighborhood neighborhood, Us us, String nui, String surname, String name, String nickName,
@@ -1137,6 +1141,15 @@ public class Beneficiaries implements java.io.Serializable
     public void setReferenceses(Set<References> referenceses) {
         this.referenceses = referenceses;
     }
+
+	@Column(name = "completed_services")
+	public Integer getCompletedServices() {
+		return completedServices;
+	}
+
+	public void setCompletedServices(Integer completedServices) {
+		this.completedServices = completedServices;
+	}
 
     public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())

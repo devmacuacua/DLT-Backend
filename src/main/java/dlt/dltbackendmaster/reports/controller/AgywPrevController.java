@@ -8,9 +8,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -34,9 +36,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dlt.dltbackendmaster.domain.District;
 import dlt.dltbackendmaster.reports.AgywPrevReport;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
+import dlt.dltbackendmaster.service.BeneficiariyService;
 import dlt.dltbackendmaster.service.DAOService;
 
 /**
@@ -63,10 +67,12 @@ public class AgywPrevController {
 	private static final String VULNERABILITIES_AND_SERVICES_SUMMARY_REPORT_NAME = "DLT2.0_BENEFICIARIAS_VULNERABILIDADES_E_SERVICOS_RESUMO_POR";
 
 	private final DAOService service;
+	private final BeneficiariyService beneficiariyService;
 
 	@Autowired
-	public AgywPrevController(DAOService service) {
+	public AgywPrevController(DAOService service, BeneficiariyService beneficiariyService) {
 		this.service = service;
+		this.beneficiariyService = beneficiariyService;
 	}
 
 	@SuppressWarnings("null")
@@ -996,4 +1002,29 @@ public class AgywPrevController {
 		return null;
 	}
 
+	@SuppressWarnings("null")
+	@GetMapping(path = "/markAsCompletedServices")
+	public ResponseEntity<Map<Integer, Map<String, ResultObject>>> markAsCompletedServices(
+			@RequestParam(name = "startDate") String startDate, @RequestParam(name = "endDate") String endDate) {
+		AgywPrevReport report = new AgywPrevReport(service, beneficiariyService);
+
+		try {
+			Integer[] simplifiedDistrictsIdsArray = { 44, 45 };
+			report.getAgywPrevResultObject(simplifiedDistrictsIdsArray, startDate, endDate, 2);
+
+			List<District> allDistricts = service.getAll(District.class);
+			List<Integer> alldistrictsIdsList = allDistricts.stream().map(District::getId).collect(Collectors.toList());
+			List<Integer> simplifiedDistrictsIds = Arrays.asList(simplifiedDistrictsIdsArray);
+			List<Integer> completeDistrictsIdsList = alldistrictsIdsList.stream()
+					.filter(item -> !simplifiedDistrictsIds.contains(item)).collect(Collectors.toList());
+			Integer[] completeDistrictsIdsArray = (Integer[]) completeDistrictsIdsList.toArray(new Integer[0]);
+
+			report.getAgywPrevResultObject(completeDistrictsIdsArray, startDate, endDate, 1);
+
+			return new ResponseEntity<>(null, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
