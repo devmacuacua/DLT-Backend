@@ -1005,21 +1005,18 @@ public class AgywPrevController {
 	@SuppressWarnings("null")
 	@GetMapping(path = "/markAsCompletedServices")
 	public ResponseEntity<Map<Integer, Map<String, ResultObject>>> markAsCompletedServices(
-			@RequestParam(name = "startDate") String startDate, @RequestParam(name = "endDate") String endDate) {
+			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") String startDate,
+			@RequestParam(name = "endDate") String endDate){
 		AgywPrevReport report = new AgywPrevReport(service, beneficiariyService);
 
 		try {
-			Integer[] simplifiedDistrictsIdsArray = { 44, 45 };
-			report.getAgywPrevResultObject(simplifiedDistrictsIdsArray, startDate, endDate, 2);
-
-			List<District> allDistricts = service.getAll(District.class);
-			List<Integer> alldistrictsIdsList = allDistricts.stream().map(District::getId).collect(Collectors.toList());
-			List<Integer> simplifiedDistrictsIds = Arrays.asList(simplifiedDistrictsIdsArray);
-			List<Integer> completeDistrictsIdsList = alldistrictsIdsList.stream()
-					.filter(item -> !simplifiedDistrictsIds.contains(item)).collect(Collectors.toList());
-			Integer[] completeDistrictsIdsArray = (Integer[]) completeDistrictsIdsList.toArray(new Integer[0]);
-
-			report.getAgywPrevResultObject(completeDistrictsIdsArray, startDate, endDate, 1);
+			Integer[] simplifiedDistrictsIds = { 44, 45 };
+			Integer[] completeDistrictsIds = Arrays.stream(districts)
+	                .filter(item -> !Arrays.asList(simplifiedDistrictsIds).contains(item))
+	                .toArray(Integer[]::new);
+			
+			report.getAgywPrevResultObject(completeDistrictsIds, startDate, endDate, 1);
+			report.getAgywPrevResultObject(simplifiedDistrictsIds, startDate, endDate, 2);
 
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
