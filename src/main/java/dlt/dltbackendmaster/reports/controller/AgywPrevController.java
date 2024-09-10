@@ -85,7 +85,7 @@ public class AgywPrevController {
 
 		try {
 			Map<Integer, Map<String, ResultObject>> reportObject = report.getAgywPrevResultObject(districts, startDate,
-					endDate, reportType);
+					endDate, reportType, false);
 
 			return new ResponseEntity<>(reportObject, HttpStatus.OK);
 		} catch (Exception e) {
@@ -1015,8 +1015,8 @@ public class AgywPrevController {
 	                .filter(item -> !Arrays.asList(simplifiedDistrictsIds).contains(item))
 	                .toArray(Integer[]::new);
 			
-			report.getAgywPrevResultObject(completeDistrictsIds, startDate, endDate, 1);
-			report.getAgywPrevResultObject(simplifiedDistrictsIds, startDate, endDate, 2);
+			report.getAgywPrevResultObject(completeDistrictsIds, startDate, endDate, 1, true);
+			report.getAgywPrevResultObject(simplifiedDistrictsIds, startDate, endDate, 2, true);
 
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
