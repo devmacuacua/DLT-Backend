@@ -492,10 +492,7 @@ public class SyncController {
 				.hasNext();) {
 			Beneficiaries beneficiary = iterator.next();
 			boolean toBeRemoved = true;
-			if (beneficiary.getDateCreated().after(sixMonthsDate)
-					|| beneficiary.getDateUpdated() != null && beneficiary.getDateUpdated().after(sixMonthsDate)
-							&& (beneficiary.getUpdatedBy() == null || beneficiary.getUpdatedBy() != null
-									&& beneficiary.getUpdatedBy() != 7 && beneficiary.getUpdatedBy() != 1325)) {
+			if (beneficiary.getDateCreated().after(sixMonthsDate)) {
 				toBeRemoved = false;
 				continue;
 			}
@@ -503,8 +500,7 @@ public class SyncController {
 			if (toBeRemoved) {
 				Set<BeneficiariesInterventions> interventions = beneficiary.getBeneficiariesInterventionses();
 				for (BeneficiariesInterventions intervention : interventions) {
-					if (intervention.getDateCreated().after(sixMonthsDate) || intervention.getDateUpdated() != null
-							&& intervention.getDateUpdated().after(sixMonthsDate)) {
+					if (intervention.getDateCreated().after(sixMonthsDate)) {
 						toBeRemoved = false;
 						continue beneficiariesLoop;
 					}
@@ -513,8 +509,7 @@ public class SyncController {
 				if (toBeRemoved) {
 					Set<References> references = beneficiary.getReferenceses();
 					for (References reference : references) {
-						if (reference.getDateCreated().after(sixMonthsDate) || reference.getDateUpdated() != null
-								&& reference.getDateUpdated().after(sixMonthsDate)) {
+						if (reference.getDateCreated().after(sixMonthsDate)) {
 							toBeRemoved = false;
 							continue beneficiariesLoop;
 						}

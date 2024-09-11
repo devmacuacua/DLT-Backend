@@ -144,7 +144,7 @@ public class AgywPrevQueries {
 			+ "                    max(case\n"
 			+ "                        when sub_service_id in (214) then service_date\n"
 			+ "                    end) approaches_date,"
-			+ "					   if(enrollment_date is null, min(service_date), enrollment_date) enrollment_date\n" 
+			+ "					   min(service_date) enrollment_date\n" 
 			+ "				from agyw_prev_mview\n"
 			+ "				where district_id in (:districts) "
 			+ "				and vulnerable = 1 "
@@ -295,7 +295,7 @@ public class AgywPrevQueries {
 			+ "                    max(case\n"
 			+ "                        when sub_service_id in (214) then service_date\n"
 			+ "                    end) approaches_date,"
-			+ "					   if(enrollment_date is null, min(service_date), enrollment_date) enrollment_date\n" 
+			+ "					   min(service_date) enrollment_date\n" 
 			+ "				from agyw_prev_mview\n"
 			+ "				where district_id in (:districts) "
 			+ "				and vulnerable = 1 "
@@ -1032,4 +1032,15 @@ public class AgywPrevQueries {
 			+ "-- LEFT JOIN app_dream_parceiros_tipo pt ON pt.id=dp.parceria_id -- tabela por tipo de parceiro (CM/US/ES)\n"
 			+ "group by a.beneficiary_id\n"
 			+ "order by provincia,distrito,nui";
+	
+	public static final String BENEFICIARIES_WITH_NO_PP_COMPLETION = ""
+			+ "select "
+			+ "b.id, "
+			+ "concat(d.code,'/',nui) as nui,\n"
+			+ "p.name as province,\n"
+			+ "d.name as district\n"
+			+ "from beneficiaries b\n"
+			+ "left join district d on b.district_id = d.id\n"
+			+ "inner join province p on d.province_id = p.id\n"
+			+ "where b.id in (:beneficiaries_ids)";
 }

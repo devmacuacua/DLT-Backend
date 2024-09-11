@@ -34,7 +34,7 @@ import javax.persistence.TemporalType;
 				+ " AND (:searchUserCreator IS NULL OR u.user.createdBy = :searchUserCreator OR u.user.updatedBy =:searchUserCreator) "
 				+ " AND (:searchDistrict IS NULL OR d.id = :searchDistrict)"
 				+ " AND (:searchEntryPoint IS NULL OR u.user.entryPoint = cast(:searchEntryPoint as string)) order by u.lastSyncDate desc "),
-		@NamedQuery(name = "UserLastSync.countAll", query = "SELECT count(u.id) FROM UserLastSync u "
+		@NamedQuery(name = "UserLastSync.countAll", query = "SELECT count(distinct u.id) FROM UserLastSync u "
 				+ " LEFT JOIN u.user.districts d "
 				+ " Where concat(u.user.name, \' \' ,u.user.surname) like concat('%',:searchName,'%') "
 				+ " AND u.username like :searchUsername "
