@@ -35,7 +35,7 @@ public class BeneficiariyServiceImpl implements BeneficiariyService {
 		Beneficiaries beneficiary = daoService.GetUniqueEntityByNamedQuery(queryName, beneficiaryId,
 				serviceCompletionLevel);
 		if (beneficiary != null) {
-			beneficiary.setCompletedServices(serviceCompletionLevel);
+			beneficiary.setCompletionStatus(serviceCompletionLevel);
 			daoService.update(beneficiary);
 		}
 	}

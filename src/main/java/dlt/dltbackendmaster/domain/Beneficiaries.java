@@ -395,9 +395,9 @@ public class Beneficiaries implements java.io.Serializable
     private Set<VulnerabilityHistory> vulnerabilityHistories = new HashSet<VulnerabilityHistory>(0);
     private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
     private Set<References> referenceses = new HashSet<References>(0);
-	private Integer completedServices;
+	private Integer completionStatus;
 	
-    public Beneficiaries() {}
+	public Beneficiaries() {}
 
     public Beneficiaries(Neighborhood neighborhood, Us us, String nui, String surname, String name, String nickName,
                          Date dateOfBirth, char gender, Date enrollmentDate, Integer nationality, String entryPoint,
@@ -1142,13 +1142,13 @@ public class Beneficiaries implements java.io.Serializable
         this.referenceses = referenceses;
     }
 
-	@Column(name = "completed_services")
-	public Integer getCompletedServices() {
-		return completedServices;
+	@Column(name = "completion_status")
+    public Integer getCompletionStatus() {
+		return completionStatus;
 	}
 
-	public void setCompletedServices(Integer completedServices) {
-		this.completedServices = completedServices;
+	public void setCompletionStatus(Integer completionStatus) {
+		this.completionStatus = completionStatus;
 	}
 
     public ObjectNode toObjectNode(String lastPulledAt) {
