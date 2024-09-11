@@ -1,15 +1,6 @@
 package dlt.dltbackendmaster.reports;
 
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.AGE_BANDS;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_PRIMARY_PACKAGE;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_PRIMARY_SERVICE;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_SECONDARY_SERVICE;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_VIOLENCE_SERVICE;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.DISAGGREGATIONS;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.ENROLLMENT_TIMES;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.HAD_SCHOLL_ALLOWANCE;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.HAD_SOCIAL_ECONOMIC_APPROACHES;
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.STARTED_SERVICE;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.*;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudante;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudanteViolencePrevention;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRapariga;
@@ -32,7 +23,6 @@ import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPrep;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSAAJEducationSessions;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRapariga;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRaparigaViolencePrevention;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedFinancialLiteracyAflatoun;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedGuiaFacilitacao;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedSAAJEducationSessions;
 import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedViolencePrevention15Plus;
@@ -1012,8 +1002,8 @@ public class AgywPrevReport {
 			String endDate, int reportType) {
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();
 
-		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate)
-				: processSimplified(districts, startDate, endDate);
+		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate, false )
+				: processSimplified(districts, startDate, endDate,false);
 
 		for (Integer district : districts) {
 			Map<String, ResultObject> districtAgywPrevResultObject = new HashMap<>();
