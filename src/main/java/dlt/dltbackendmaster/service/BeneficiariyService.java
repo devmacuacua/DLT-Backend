@@ -8,6 +8,6 @@ package dlt.dltbackendmaster.service;
  */
 public interface BeneficiariyService {
 
-	public void markAsCompletedServices(Integer beneficiaryId,
+	public void saveCompletionStatus(Integer beneficiaryId,
 			Integer serviceComplationLevel);
 }

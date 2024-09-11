@@ -1168,8 +1168,8 @@ public class AgywPrevController {
 	}
 
 	@SuppressWarnings("null")
-	@GetMapping(path = "/markAsCompletedServices")
-	public ResponseEntity<Map<Integer, Map<String, ResultObject>>> markAsCompletedServices(
+	@GetMapping(path = "/saveCompletionStatus")
+	public ResponseEntity<Map<Integer, Map<String, ResultObject>>> saveCompletionStatus(
 			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") String startDate,
 			@RequestParam(name = "endDate") String endDate){
 		AgywPrevReport report = new AgywPrevReport(service, beneficiariyService);
@@ -1181,7 +1181,20 @@ public class AgywPrevController {
 	                .toArray(Integer[]::new);
 			
 			report.getAgywPrevResultObject(completeDistrictsIds, startDate, endDate, 1, true);
-			report.getAgywPrevResultObject(simplifiedDistrictsIds, startDate, endDate, 2, true);
+			
+			List<Integer> simplifiedFoundDistrictsIds= new ArrayList<>();
+			for(int i : simplifiedDistrictsIds) {
+				if(Arrays.asList(districts).contains(i))
+				{
+					simplifiedFoundDistrictsIds.add(i);
+				}
+			}
+			
+			Integer[]simplifiedFoundDistrictsArrayIds = simplifiedFoundDistrictsIds.toArray(new Integer[0]);
+			if(!simplifiedFoundDistrictsIds.isEmpty())
+			{
+				report.getAgywPrevResultObject(simplifiedFoundDistrictsArrayIds, startDate, endDate, 2, true);
+			}
 
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {

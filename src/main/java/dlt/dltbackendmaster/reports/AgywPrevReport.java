@@ -93,18 +93,18 @@ public class AgywPrevReport {
 			String endDate, int reportType, boolean isFlagWriter) {
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();
 
-		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate,isFlagWriter)
-				: processSimplified(districts, startDate, endDate,isFlagWriter);
+		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate)
+				: processSimplified(districts, startDate, endDate);
 
 		for (Integer district : districts) {
 			Map<String, ResultObject> districtAgywPrevResultObject = new HashMap<>();
 			Map<String, Long> districtSummary = processDistrictSummary(district);
 			ResultObject completedOnlyPrimaryPackage = computeDiggregationCompletedOnlyPrimaryPackage(reportObject,
-					district);
+					district, isFlagWriter);
 			ResultObject completedPrimaryPackageAndSecondaryService = computeDiggregationCompletedPrimaryPackageAndSecondaryService(
-					reportObject, district);
+					reportObject, district, isFlagWriter);
 			ResultObject completedOnlyServiceNotPrimaryPackage = computeDiggregationCompletedOnlyServiceNotPrimaryPackage(
-					reportObject, district);
+					reportObject, district, isFlagWriter);
 			ResultObject startedServiceDidNotComplete = computeDiggregationStartedServiceDidNotComplete(reportObject,
 					district);
 			districtAgywPrevResultObject.put("completed-only-primary-package", completedOnlyPrimaryPackage);
@@ -141,7 +141,7 @@ public class AgywPrevReport {
 		return agywPrevResultObject;
 	}
 
-	public ReportObject process(Integer[] districts, String startDate, String endDate, boolean isFlagWriter) {
+	public ReportObject process(Integer[] districts, String startDate, String endDate) {
 
 		ReportObject reportObject = new ReportObject(districts);
 
@@ -176,8 +176,7 @@ public class AgywPrevReport {
 											&& completedCondomsPromotionOrProvision(agywPrev))) {
 						addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 								getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
-								COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
-						if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),2);
+								COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());						
 					}
 					if ((completedAvanteEstudante(agywPrev) || ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev))
 							|| completedSAAJEducationSessions(agywPrev)
@@ -189,7 +188,6 @@ public class AgywPrevReport {
 						addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 								getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 								COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
-						if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),3);
 					}
 					if (startedAvanteEstudante(agywPrev) || startedSAAJEducationSessions(agywPrev)
 							|| startedAvanteEstudanteViolencePrevention(agywPrev)
@@ -221,7 +219,6 @@ public class AgywPrevReport {
 						addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 								getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 								COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
-						if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),2);
 					}
 					if ((completedAvanteRapariga(agywPrev) || ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev))
 							|| completedSAAJEducationSessions(agywPrev)
@@ -233,7 +230,6 @@ public class AgywPrevReport {
 						addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 								getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 								COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
-						if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),3);
 					}
 					if (startedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 							|| startedAvanteRaparigaViolencePrevention(agywPrev) || startedPostViolenceCare_US(agywPrev)
@@ -260,7 +256,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_SECONDARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),1);
 				}
 
 				// Old Curriculum
@@ -273,7 +268,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),2);
 				}
 				if (completedSocialAssetsOldCurriculum(agywPrev) || completedSAAJEducationSessions(agywPrev)
 						|| (agywPrev.getVblt_sexually_active() != null && agywPrev.getVblt_sexually_active() == 1
@@ -282,7 +276,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),3);
 				}
 				if (hadSchoolAllowance(agywPrev) || completedPostViolenceCare_US(agywPrev)
 						|| completedPostViolenceCare_CM(agywPrev) || completedPostViolenceCare_US(agywPrev)
@@ -294,7 +287,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_SECONDARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),1);
 				}
 				if (startedSocialAssetsOldCurriculum(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
@@ -308,7 +300,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),2);
 				}
 				if (completedCondomsPromotionOrProvision(agywPrev) || completedGuiaFacilitacao(agywPrev)
 						|| completedHIVTestingServices(agywPrev) || completedFinancialLiteracy(agywPrev)
@@ -316,7 +307,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),3);
 				}
 				if (agywPrev.getCurrent_age_band() == 2
 						&& (hadSchoolAllowance(agywPrev) || completedSocialAssetsOldCurriculum(agywPrev))
@@ -326,7 +316,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_SECONDARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),1);
 				}
 				if (startedGuiaFacilitacaoSocialAssets15Plus(agywPrev) || startedGuiaFacilitacao(agywPrev)
 						|| startedViolencePrevention15Plus(agywPrev)
@@ -336,7 +325,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							STARTED_SERVICE, agywPrev.getBeneficiary_id());
-
 				}
 				if (completedViolencePrevention15Plus(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
@@ -350,13 +338,11 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),2);
 				}
 				if (completedHivSessions(agywPrev) || completedGbvSessions(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),3);
 				}
 
 				if (completedDisagCombinedSocioEconomicApproaches(agywPrev) && ageOnEndDate < 26) {
@@ -381,7 +367,7 @@ public class AgywPrevReport {
 		return reportObject;
 	}
 
-	public ReportObject processSimplified(Integer[] districts, String startDate, String endDate, boolean isFlagWriter) {
+	public ReportObject processSimplified(Integer[] districts, String startDate, String endDate) {
 
 		ReportObject reportObject = new ReportObject(districts);
 
@@ -407,13 +393,11 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),2);
 				}
 				if (completedSimplifiedAvanteRapariga(agywPrev) || completedSimplifiedSAAJEducationSessions(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),3);
 				}
 				if (startedSimplifiedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 						|| startedAvanteRaparigaViolencePrevention(agywPrev) || startedPostViolenceCare_US(agywPrev)
@@ -434,7 +418,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_SECONDARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),1);
 				}
 			} else { // 15-24
 				if (completedCondomsPromotionOrProvision(agywPrev) && completedSimplifiedGuiaFacilitacao(agywPrev)
@@ -442,21 +425,18 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),2);
 				}
 				if (completedCondomsPromotionOrProvision(agywPrev) || completedSimplifiedGuiaFacilitacao(agywPrev)
 						|| completedHIVTestingServices(agywPrev) || completedFinancialLiteracyAflateen(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),3);
 				}
 				if (hadSchoolAllowance(agywPrev) || completedCombinedSocioEconomicApproaches(agywPrev)
 						|| completedContraceptionsPromotionOrProvision(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_SECONDARY_SERVICE, agywPrev.getBeneficiary_id());
-					if (isFlagWriter) beneficiariyService.markAsCompletedServices(agywPrev.getBeneficiary_id(),1);
 				}
 				if (startedSimplifiedGuiaFacilitacao(agywPrev) || startedFinancialLiteracyAflateen(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
@@ -662,7 +642,7 @@ public class AgywPrevReport {
 				.get(DISAGGREGATIONS[layering]).add(beneficiary);
 	}
 
-	public ResultObject computeDiggregationCompletedOnlyPrimaryPackage(ReportObject reportObject, Integer district) {
+	public ResultObject computeDiggregationCompletedOnlyPrimaryPackage(ReportObject reportObject, Integer district, boolean isFlagWriter) {
 		ResultObject resultObject = new ResultObject();
 
 		int total = 0;
@@ -679,6 +659,7 @@ public class AgywPrevReport {
 					if (!(completedSecondaryService.contains(beneficiaryId)
 							|| completedOnlyPrimaryPackage.contains(beneficiaryId))) {
 						completedOnlyPrimaryPackage.add(beneficiaryId);
+						if (isFlagWriter) beneficiariyService.saveCompletionStatus(beneficiaryId,2);
 					}
 				}
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
@@ -695,7 +676,7 @@ public class AgywPrevReport {
 	}
 
 	public ResultObject computeDiggregationCompletedPrimaryPackageAndSecondaryService(ReportObject reportObject,
-			Integer district) {
+			Integer district, boolean isFlagWriter) {
 		ResultObject resultObject = new ResultObject();
 
 		int total = 0;
@@ -712,6 +693,7 @@ public class AgywPrevReport {
 					if (completedSecondaryService.contains(beneficiaryId)
 							&& !completedPrimaryPackageAndSecondaryService.contains(beneficiaryId)) {
 						completedPrimaryPackageAndSecondaryService.add(beneficiaryId);
+						if (isFlagWriter) beneficiariyService.saveCompletionStatus(beneficiaryId,3);
 					}
 				}
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
@@ -728,7 +710,7 @@ public class AgywPrevReport {
 	}
 
 	public ResultObject computeDiggregationCompletedOnlyServiceNotPrimaryPackage(ReportObject reportObject,
-			Integer district) {
+			Integer district, boolean isFlagWriter) {
 		ResultObject resultObject = new ResultObject();
 
 		int total = 0;
@@ -756,6 +738,7 @@ public class AgywPrevReport {
 					if (!(completedPrimaryPackage.contains(beneficiaryId)
 							|| completedOnlyServiceNotPrimaryPackage.contains(beneficiaryId))) {
 						completedOnlyServiceNotPrimaryPackage.add(beneficiaryId);
+						if (isFlagWriter) beneficiariyService.saveCompletionStatus(beneficiaryId,1);
 					}
 				}
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
@@ -1002,13 +985,13 @@ public class AgywPrevReport {
 			String endDate, int reportType) {
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();
 
-		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate, false )
-				: processSimplified(districts, startDate, endDate,false);
+		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate)
+				: processSimplified(districts, startDate, endDate);
 
 		for (Integer district : districts) {
 			Map<String, ResultObject> districtAgywPrevResultObject = new HashMap<>();
 			ResultObject completedOnlyServiceNotPrimaryPackage = computeDiggregationCompletedOnlyServiceNotPrimaryPackage(
-					reportObject, district);
+					reportObject, district, false);
 			ResultObject startedServiceDidNotComplete = computeDiggregationStartedServiceDidNotComplete(reportObject,
 					district);
 			districtAgywPrevResultObject.put("completed-service-not-primary-package",

@@ -17,7 +17,7 @@ public class BeneficiariyServiceImpl implements BeneficiariyService {
 	public DAOService daoService;
 
 	@Override
-	public void markAsCompletedServices(Integer beneficiaryId, Integer serviceCompletionLevel) {
+	public void saveCompletionStatus(Integer beneficiaryId, Integer serviceCompletionLevel) {
 		String queryName;
 
 		switch (serviceCompletionLevel) {
