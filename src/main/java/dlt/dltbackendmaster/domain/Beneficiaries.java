@@ -397,7 +397,7 @@ public class Beneficiaries implements java.io.Serializable
     private Set<VulnerabilityHistory> vulnerabilityHistories = new HashSet<VulnerabilityHistory>(0);
     private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
     private Set<References> referenceses = new HashSet<References>(0);
-	private Integer completionStatus;
+	private int completionStatus;
 	
 	public Beneficiaries() {}
 
@@ -1167,11 +1167,11 @@ public class Beneficiaries implements java.io.Serializable
     }
 
 	@Column(name = "completion_status")
-    public Integer getCompletionStatus() {
+    public int getCompletionStatus() {
 		return completionStatus;
 	}
 
-	public void setCompletionStatus(Integer completionStatus) {
+	public void setCompletionStatus(int completionStatus) {
 		this.completionStatus = completionStatus;
 	}
 
