@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import dlt.dltbackendmaster.domain.ReferencesServicesObject;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.repository.DAORepository;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
+import dlt.dltbackendmaster.util.Utility;
 
 /**
  * This class implements the Service interface
@@ -242,7 +242,12 @@ public class DAOServiceImpl implements DAOService {
 
 		for (ReferencesServices referenceServices : referencesServices) {
 
-			Set<BeneficiariesInterventions> interventions = beneficiary.getBeneficiariesInterventionses();
+			References reference = referenceServices.getReferences();
+
+			List<BeneficiariesInterventions> interventions = GetAllEntityByNamedQuery(
+					"BeneficiaryIntervention.findAllByBeneficiaryAndDate", Utility.dateToLocalDate(reference.getDate()),
+					beneficiary.getId());
+
 			Integer referenceServiceStatus = ServiceCompletionRules.getReferenceServiceStatus(interventions, serviceId);
 
 			if (referenceServiceStatus.intValue() != (referenceServices.getStatus())) {
@@ -252,7 +257,6 @@ public class DAOServiceImpl implements DAOService {
 				referenceServices = update(referenceServices);
 
 				// Actualizar o status da referências
-				References reference = referenceServices.getReferences();
 				References referenceDB = find(References.class, reference.getId());
 				Integer referenceStatus = ServiceCompletionRules.getReferenceStatus(referenceDB, interventions);
 

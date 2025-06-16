@@ -2,6 +2,8 @@ package dlt.dltbackendmaster.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -72,6 +74,10 @@ public class Utility {
 		LocalDateTime localDateTime = dateToLocalDateTime(date);
 		LocalDateTime endOfDay = localDateTime.with(LocalTime.MAX);
 		return localDateTimeToDate(endOfDay);
+	}
+
+	public static LocalDate dateToLocalDate(Date date) {
+		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 	private static LocalDateTime dateToLocalDateTime(Date date) {

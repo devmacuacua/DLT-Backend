@@ -1,12 +1,9 @@
 package dlt.dltbackendmaster.controller;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
@@ -20,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
-
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 import dlt.dltbackendmaster.domain.CountIntervention;
@@ -33,6 +28,7 @@ import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.service.BeneficiariyInterventionService;
 import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
+import dlt.dltbackendmaster.util.Utility;
 
 @RestController
 @EnableCompression
@@ -69,13 +65,13 @@ public class BeneficiaryInterventionController {
 			Us us = service.find(Us.class, intervention.getUs().getId());
 			// FIXME: Remover esta gambiária após resolver o issue
 			Beneficiaries beneficiary = service.find(Beneficiaries.class, intervention.getId().getBeneficiaryId());
-				
+
 			LocalDate enrollmentDate = convertToLocalDate(beneficiary.getEnrollmentDate());
-			
-			if(intervention.getDate().isBefore(enrollmentDate)) {
+
+			if (intervention.getDate().isBefore(enrollmentDate)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 			}
-			
+
 			intervention.setUs(us);
 			intervention.setBeneficiaries(beneficiary);
 			intervention.setDateCreated(new Date());
@@ -198,7 +194,7 @@ public class BeneficiaryInterventionController {
 				}
 				service.update(beneficiary1);
 			}
-			
+
 			subService = service.find(SubServices.class, intervention.getId().getSubServiceId());
 
 			updateReferences(updatedIntervention, beneficiary, subService);
@@ -224,8 +220,7 @@ public class BeneficiaryInterventionController {
 			// Get only interventions provided on or after referral date
 			References reference = referenceServices.getReferences();
 			List<BeneficiariesInterventions> interventions = service.GetAllEntityByNamedQuery(
-					"BeneficiaryIntervention.findAllByBeneficiaryAndDate",
-					Instant.ofEpochMilli(reference.getDate().getTime()).atZone(ZoneId.systemDefault()).toLocalDate(),
+					"BeneficiaryIntervention.findAllByBeneficiaryAndDate", Utility.dateToLocalDate(reference.getDate()),
 					beneficiary.getId());
 			Integer referenceServiceStatus = ServiceCompletionRules.getReferenceServiceStatus(interventions, serviceId);
 
@@ -312,13 +307,11 @@ public class BeneficiaryInterventionController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	private static LocalDate convertToLocalDate(Date date) {
-	        if (date == null) {
-	            return null; 
-	        }
-	        return Instant.ofEpochMilli(date.getTime()) 
-	                      .atZone(ZoneId.systemDefault()) 
-	                      .toLocalDate(); 
+		if (date == null) {
+			return null;
+		}
+		return Utility.dateToLocalDate(date);
 	}
 }
