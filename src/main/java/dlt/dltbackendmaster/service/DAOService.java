@@ -86,5 +86,5 @@ public interface DAOService {
 	
 	<T> List<T> GetEntityByNamedQuery(String query, String name, Date dateOfBirth, int locality);
 	
-	<T> List<T> GetAllEntityByNamedQuery(String query, int profileId, List<Integer> localities);
+	<T> List<T> GetAllEntitiesByNamedQuery(String query, int profileId, List<Integer> localities);
 }

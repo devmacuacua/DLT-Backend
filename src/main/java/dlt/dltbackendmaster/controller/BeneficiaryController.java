@@ -336,4 +336,31 @@ public class BeneficiaryController {
 		logger.warn("Processed " + count + " beneficiaries of " + beneficiariesCount);
 		logger.warn("Finished updating beneficiaries");
 	}
+
+	@PutMapping(path = "/set-beneficiaries-vulnerable-flag")
+	public void setBeneficiariesVulnerableFlag() {
+
+		logger.warn("Fetching current COP beneficiaries");
+		List<Beneficiaries> beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.findByCurrentCop");
+		int beneficiariesCount = beneficiaries.size();
+		logger.warn("Found " + beneficiariesCount + " beneficiaries");
+
+		int count = 0;
+
+		logger.warn("Starting updating beneficiaries");
+		for (Beneficiaries beneficiary : beneficiaries) {
+			int vulnerable = vulnerabilityService.isVulnerable(beneficiary) ? 1 : 0;
+			if (vulnerable == 1) {
+				beneficiary.setVulnerable(vulnerable);
+				service.update(beneficiary);
+			}
+			count++;
+
+			if (count % 1000 == 0) {
+				logger.warn("Processed " + count + " beneficiaries of " + beneficiariesCount);
+			}
+		}
+		logger.warn("Processed " + count + " beneficiaries of " + beneficiariesCount);
+		logger.warn("Finished updating beneficiaries");
+	}
 }

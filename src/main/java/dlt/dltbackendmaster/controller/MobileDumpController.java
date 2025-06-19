@@ -186,7 +186,7 @@ public class MobileDumpController {
 			@RequestParam("username") String username, 
 			@RequestParam("localities") List<Integer> localities) 
 	{
-		List<Users> supervisors = service.GetAllEntityByNamedQuery("Users.findByProfileAndLocalities", SUPERVISOR_PROFILE_ID, localities);
+		List<Users> supervisors = service.GetAllEntitiesByNamedQuery("Users.findByProfileAndLocalities", SUPERVISOR_PROFILE_ID, localities);
 		
 		List <String> usernames = supervisors.stream()
 				.map(Users::getUsername)

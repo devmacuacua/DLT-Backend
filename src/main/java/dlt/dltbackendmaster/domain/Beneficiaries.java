@@ -336,6 +336,10 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 						+ " where b.dateCreated < '2024-09-21' "
 						+ " and b.status = 1"
 						+ ""), 
+                @NamedQuery(name = "Beneficiary.findByCurrentCop",query = "select b from Beneficiaries b "
+						+ " where b.dateCreated >= '2024-09-21' "
+						+ " and b.status = 1"
+						+ ""), 
 })
 public class Beneficiaries implements java.io.Serializable
 {

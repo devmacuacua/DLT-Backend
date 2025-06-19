@@ -853,6 +853,7 @@ public class SyncController {
 								intervention.setUpdatedBy(String.valueOf(userId));
 							}
 							service.Save(intervention);
+							service.registerServiceCompletionStatus(intervention);
 						} catch (DataIntegrityViolationException e) {
 							logger.warn(e.getRootCause().getMessage());
 							continue;
@@ -871,6 +872,8 @@ public class SyncController {
 							intervention.setUpdatedBy(String.valueOf(userId));
 							intervention.update(updated, lastPulledAt);
 							service.update(intervention);
+							
+							service.registerServiceCompletionStatus(intervention);
 
 							// If there was an update on the key, intervention must be deleted
 							if (updated.getSub_service_id().intValue() != subServiceId.intValue()

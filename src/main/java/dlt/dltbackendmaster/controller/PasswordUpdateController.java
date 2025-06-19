@@ -31,7 +31,7 @@ public class PasswordUpdateController {
 
 	@Autowired
 	private EmailSender emailSender;
-
+	
 	@Autowired
 	private AppConfig appConfig;
 
